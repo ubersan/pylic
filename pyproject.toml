@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "0.0.5"
+version = "0.0.6"
 description = "Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 license = "MIT License"
@@ -19,8 +19,7 @@ wheel = "^0.36.2"
 twine = "^3.3.0"
 
 [tool.taskipy.tasks]
-release_new_version = "gh release create $@"
-tag_new_version = "git tag $@"
+release = "scripts/create_new_release.sh"
 
 [tool.pylic]
 allowed_licenses = [
