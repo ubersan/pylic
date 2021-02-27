@@ -18,4 +18,7 @@ whitelisted_packages = [
 ## Development
 
 Required tools:
+- Poetry (https://python-poetry.org/)
 - GitHub cli (https://github.com/cli/cli)
+
+Creating a new release is as simple as `poetry run task release vx.x.x`.
