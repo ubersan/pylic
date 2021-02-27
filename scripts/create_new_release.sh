@@ -2,4 +2,4 @@
 
 VERSION=$1
 git tag ${VERSION}
-gh release create ${VERSION}
+gh release create --notes "" ${VERSION}
