@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "0.0.3"
+version = "0.0.4"
 description = "Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 license = "MIT License"
@@ -28,7 +28,6 @@ allowed_licenses = [
     'MIT',
     'BSD'
 ]
-whitelisted_packages = []
 
 [tool.black]
 line_length = 120

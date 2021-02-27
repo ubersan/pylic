@@ -1,11 +1,16 @@
 import setuptools
+import toml
 
 with open("README.md", "r") as readme_file:
     readme_content = readme_file.read()
 
+with open("pyproject.toml") as pyproject_file:
+    pyproject_content = toml.load(pyproject_file)
+    version = pyproject_content["tool"]["poetry"]["version"]
+
 setuptools.setup(
     name="pylic",
-    version="0.0.3",
+    version=version,
     description="Python license checker",
     author="Sandro Huber",
     author_email="sandrochuber@gmail.com",
