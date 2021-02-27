@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "0.0.6"
+version = "0.0.7"
 description = "Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 license = "MIT License"
