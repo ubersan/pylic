@@ -14,3 +14,8 @@ whitelisted_packages = [
     "examplePyPackage"
 ]
 ```
+
+## Development
+
+Required tools:
+- GitHub cli (https://github.com/cli/cli)

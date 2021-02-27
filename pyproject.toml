@@ -19,9 +19,8 @@ wheel = "^0.36.2"
 twine = "^3.3.0"
 
 [tool.taskipy.tasks]
-release_new_version = "task build && task pypi_upload"
-build = "python3 setup.py sdist bdist_wheel"
-pypi_upload = "python3 -m twine upload --username __token__ --repository pypi dist/*"
+release_new_version = "gh release create $@"
+tag_new_version = "git tag $@"
 
 [tool.pylic]
 allowed_licenses = [
