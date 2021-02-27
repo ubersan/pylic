@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "0.0.2"
+version = "0.0.3"
 description = "Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 license = "MIT License"
@@ -19,16 +19,16 @@ wheel = "^0.36.2"
 twine = "^3.3.0"
 
 [tool.taskipy.tasks]
+release_new_version = "task build && task pypi_upload"
 build = "python3 setup.py sdist bdist_wheel"
+pypi_upload = "python3 -m twine upload --username __token__ --repository pypi dist/*"
 
 [tool.pylic]
 allowed_licenses = [
     'MIT',
     'BSD'
 ]
-whitelisted_packages = [
-
-]
+whitelisted_packages = []
 
 [tool.black]
 line_length = 120

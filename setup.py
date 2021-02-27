@@ -1,22 +1,23 @@
 import setuptools
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+with open("README.md", "r") as readme_file:
+    readme_content = readme_file.read()
 
 setuptools.setup(
     name="pylic",
-    version="0.0.2",
+    version="0.0.3",
+    description="Python license checker",
     author="Sandro Huber",
     author_email="sandrochuber@gmail.com",
-    description="Python license checker",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
     url="https://github.com/sandrochuber/pylic",
-    packages=setuptools.find_packages(),
+    packages=["pylic"],
+    license="MIT",
+    long_description=readme_content,
+    long_description_content_type="text/markdown",
+    python_requires=">=3.7",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.7",
 )
