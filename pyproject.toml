@@ -9,6 +9,7 @@ license = "MIT License"
 python = "^3.9"
 toml = "^0.10.2"
 taskipy = "^1.6.0"
+importlib-metadata = "^3.7.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
@@ -57,6 +58,8 @@ whitelisted_packages = [
     "twine",
     "jeepney",
     "setuptools",
+    "zipp",
+    "importlib-metadata",
 ]
 
 [tool.black]

@@ -1,5 +1,10 @@
 import sys
-from importlib import metadata
+
+try:
+    from importlib.metadata import distributions
+except ImportError:
+    from importlib_metadata import distributions  # type: ignore
+
 from typing import List, Tuple
 
 import toml
@@ -32,10 +37,10 @@ def read_pyproject_file() -> Tuple[List[str], List[str]]:
 
 
 def read_installed_license_metadata() -> List[dict]:
-    distributions = metadata.distributions()
+    installed_distributions = distributions()
 
     installed_licenses: List[dict] = []
-    for distribution in distributions:
+    for distribution in installed_distributions:
         package_name = distribution.metadata["Name"]
         licenses_string = distribution.metadata.get("License", "unknown")
         new_licenses = [
