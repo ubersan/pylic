@@ -21,7 +21,11 @@ def read_pyproject_file() -> Tuple[List[str], List[str]]:
     if pylic_config is None:
         raise Exception("No 'tool.pylic' section found in the pyproject.toml file. Excpecting a [tool.pylic] section.")
 
-    allowed_licenses: List[str] = pylic_config.get("allowed_licenses", [])
+    allowed_licenses: List[str] = [license.lower() for license in pylic_config.get("allowed_licenses", [])]
+
+    if "unknown" in allowed_licenses:
+        raise Exception("'unknown' can't be an allowed license. Whitelist the corresponding packages instead.")
+
     whitelisted_packages: List[str] = pylic_config.get("whitelisted_packages", [])
 
     return (allowed_licenses, whitelisted_packages)
@@ -33,7 +37,7 @@ def read_installed_license_metadata() -> List[dict]:
     installed_licenses: List[dict] = []
     for distribution in distributions:
         package_name = distribution.metadata["Name"]
-        licenses_string = distribution.metadata.get("License", "UNKNOWN")
+        licenses_string = distribution.metadata.get("License", "unknown")
         new_licenses = [
             {"license": license_name.strip(), "package": package_name} for license_name in licenses_string.split(",")
         ]
@@ -42,18 +46,37 @@ def read_installed_license_metadata() -> List[dict]:
     return installed_licenses
 
 
+def check_whitelisted_packages(whitelisted_packages: List[str], licenses: List[dict]):
+    bad_whitelisted_packages: List[dict] = []
+    for license_info in licenses:
+        license = license_info["license"]
+        package = license_info["package"]
+
+        if package in whitelisted_packages and license.lower() != "unknown":
+            bad_whitelisted_packages.append({"license": license, "package": package})
+
+    if len(bad_whitelisted_packages) > 0:
+        print("Found whitelisted packages with a known license. Instead allow these licenses explicitly:")
+        for bad_package in bad_whitelisted_packages:
+            print(f"\t{bad_package['package']}: {bad_package['license']}")
+        sys.exit(1)
+
+
 def check_licenses(allowed_licenses: List[str], whitelisted_packages: List[str], licenses: List[dict]) -> None:
     bad_licenses: List[dict] = []
     for license_info in licenses:
         license = license_info["license"]
         package = license_info["package"]
-        if license not in allowed_licenses and package not in whitelisted_packages:
-            bad_licenses.append({"license": license, "package": package})
+
+        if (license.lower() == "unknown" and package in whitelisted_packages) or license.lower() in allowed_licenses:
+            continue
+
+        bad_licenses.append({"license": license, "package": package})
 
     if len(bad_licenses) > 0:
-        print("Found bad licenses:")
-        for license_info in bad_licenses:
-            print(f"\t{license_info['package']}: {license_info['license']}")
+        print("Found unallowed licenses:")
+        for bad_license in bad_licenses:
+            print(f"\t{bad_license['package']}: {bad_license['license']}")
         sys.exit(1)
 
     print("All licenses ok")
@@ -62,6 +85,7 @@ def check_licenses(allowed_licenses: List[str], whitelisted_packages: List[str],
 def main():
     allowed_licenses, whitelisted_packages = read_pyproject_file()
     installed_licenses = read_installed_license_metadata()
+    check_whitelisted_packages(whitelisted_packages, installed_licenses)
     check_licenses(allowed_licenses, whitelisted_packages, installed_licenses)
 
 

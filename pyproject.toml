@@ -23,8 +23,40 @@ release = "scripts/create_new_release.sh"
 
 [tool.pylic]
 allowed_licenses = [
-    'MIT',
-    'BSD'
+    "MIT",
+    "BSD",
+    "public domain",
+    "Python",
+    "2-Clause BSD",
+    "GPL 3 (see COPYING.txt)",
+    "Apache 2.0",
+    "Expat license",
+    "Apache Software License 2.0",
+    "BSD License",
+    "BSD-2-Clause or Apache-2.0",
+    "MPL 2.0",
+    "BSD 3-Clause License",
+    "Apache Software License",
+    "Apache License",
+    "Version 2.0",
+    "BSD-3-Clause",
+    "LGPL",
+    "Apache License 2.0",
+    "MPL-2.0",
+    "BSD-like",
+    "BSD or Apache License",
+    "MIT License",
+    "PSF",
+    "MPLv2.0",
+    "MIT Licences",
+]
+
+whitelisted_packages = [
+    "keyring",
+    "pep517",
+    "twine",
+    "jeepney",
+    "setuptools",
 ]
 
 [tool.black]
