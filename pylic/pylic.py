@@ -1,13 +1,12 @@
 import sys
-
-try:
-    from importlib.metadata import distributions
-except ImportError:
-    from importlib_metadata import distributions  # type: ignore
-
 from typing import List, Tuple
 
 import toml
+
+if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
+    from importlib.metadata import distributions
+else:
+    from importlib_metadata import distributions  # type: ignore
 
 
 def read_pyproject_file() -> Tuple[List[str], List[str]]:
