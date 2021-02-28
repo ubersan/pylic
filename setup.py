@@ -19,7 +19,7 @@ setuptools.setup(
     license="MIT",
     long_description=readme_content,
     long_description_content_type="text/markdown",
-    python_requires=">=3.7",
+    python_requires=">=3.6",
     install_requires=["toml"],
     classifiers=[
         "Programming Language :: Python :: 3",

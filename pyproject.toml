@@ -8,7 +8,6 @@ license = "MIT License"
 [tool.poetry.dependencies]
 python = "^3.9"
 toml = "^0.10.2"
-taskipy = "^1.6.0"
 importlib-metadata = "^3.7.0"
 
 [tool.poetry.dev-dependencies]
@@ -18,6 +17,7 @@ mypy = "^0.800"
 setuptools = "^53.0.0"
 wheel = "^0.36.2"
 twine = "^3.3.0"
+taskipy = "^1.6.0"
 
 [tool.taskipy.tasks]
 release = "scripts/create_new_release.sh"
