@@ -11,7 +11,7 @@ with open("pyproject.toml") as pyproject_file:
 setuptools.setup(
     name="pylic",
     version=version,
-    description="Python license checker",
+    description="A Python license checker",
     author="Sandro Huber",
     author_email="sandrochuber@gmail.com",
     url="https://github.com/sandrochuber/pylic",
