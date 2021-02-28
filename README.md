@@ -25,4 +25,6 @@ Required tools:
 - Poetry (https://python-poetry.org/)
 - GitHub cli (https://github.com/cli/cli)
 
-Creating a new release is as simple as `poetry run task release vx.x.x`.
+Creating a new release is as simple as:
+- Update `version` in the pyproject.toml file.
+- `poetry run task release vx.x.x`.
