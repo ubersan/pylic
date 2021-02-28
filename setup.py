@@ -20,6 +20,7 @@ setuptools.setup(
     long_description=readme_content,
     long_description_content_type="text/markdown",
     python_requires=">=3.7",
+    install_requires=["toml"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
