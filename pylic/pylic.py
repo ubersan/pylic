@@ -25,9 +25,9 @@ def read_pyproject_file() -> Tuple[List[str], List[str]]:
     if pylic_config is None:
         raise Exception("No 'tool.pylic' section found in the pyproject.toml file. Excpecting a [tool.pylic] section.")
 
-    allowed_licenses: List[str] = [license.lower() for license in pylic_config.get("allowed_licenses", [])]
+    allowed_licenses: List[str] = pylic_config.get("allowed_licenses", [])
 
-    if "unknown" in allowed_licenses:
+    if "unknown" in [allowed_license.lower() for allowed_license in allowed_licenses]:
         raise Exception("'unknown' can't be an allowed license. Whitelist the corresponding packages instead.")
 
     whitelisted_packages: List[str] = pylic_config.get("whitelisted_packages", [])
@@ -84,13 +84,19 @@ def check_whitelisted_packages(whitelisted_packages: List[str], licenses: List[d
     return True
 
 
-def check_licenses(allowed_licenses: List[str], whitelisted_packages: List[str], licenses: List[dict]) -> bool:
+def check_licenses(
+    allowed_licenses: List[str], whitelisted_packages: List[str], installed_licenses: List[dict]
+) -> bool:
     bad_licenses: List[dict] = []
-    for license_info in licenses:
+    lower_allowed_licenses = [allowed_license.lower() for allowed_license in allowed_licenses]
+
+    for license_info in installed_licenses:
         license = license_info["license"]
         package = license_info["package"]
 
-        if (license.lower() == "unknown" and package in whitelisted_packages) or license.lower() in allowed_licenses:
+        if (
+            license.lower() == "unknown" and package in whitelisted_packages
+        ) or license.lower() in lower_allowed_licenses:
             continue
 
         bad_licenses.append({"license": license, "package": package})
@@ -104,9 +110,26 @@ def check_licenses(allowed_licenses: List[str], whitelisted_packages: List[str],
     return True
 
 
+def check_for_unnecessary_allowed_licenses(allowed_licenses: List[str], installed_licenses: List[dict]) -> None:
+    installed_license_names = [license_info["license"].lower() for license_info in installed_licenses]
+
+    unnecessary_allowed_licenses = []
+    lower_allowed_licenses = [allowed_license.lower() for allowed_license in allowed_licenses]
+
+    for index, allowed_license in enumerate(lower_allowed_licenses):
+        if allowed_license not in installed_license_names:
+            unnecessary_allowed_licenses.append(allowed_licenses[index])
+
+    if len(unnecessary_allowed_licenses) > 0:
+        print("Warning, found allowed licenses that are not used by any installed package:")
+        for unnecessary_allowed_license in unnecessary_allowed_licenses:
+            print(f"\t{unnecessary_allowed_license}")
+
+
 def main():
     allowed_licenses, whitelisted_packages = read_pyproject_file()
     installed_licenses = read_installed_license_metadata()
+    check_for_unnecessary_allowed_licenses(allowed_licenses, installed_licenses)
     packages_ok = check_whitelisted_packages(whitelisted_packages, installed_licenses)
     licenses_ok = check_licenses(allowed_licenses, whitelisted_packages, installed_licenses)
 
