@@ -66,7 +66,7 @@ def read_installed_license_metadata() -> List[dict]:
     return installed_licenses
 
 
-def check_whitelisted_packages(whitelisted_packages: List[str], licenses: List[dict]):
+def check_whitelisted_packages(whitelisted_packages: List[str], licenses: List[dict]) -> bool:
     bad_whitelisted_packages: List[dict] = []
     for license_info in licenses:
         license = license_info["license"]
@@ -79,10 +79,12 @@ def check_whitelisted_packages(whitelisted_packages: List[str], licenses: List[d
         print("Found whitelisted packages with a known license. Instead allow these licenses explicitly:")
         for bad_package in bad_whitelisted_packages:
             print(f"\t{bad_package['package']}: {bad_package['license']}")
-        sys.exit(1)
+        return False
+
+    return True
 
 
-def check_licenses(allowed_licenses: List[str], whitelisted_packages: List[str], licenses: List[dict]) -> None:
+def check_licenses(allowed_licenses: List[str], whitelisted_packages: List[str], licenses: List[dict]) -> bool:
     bad_licenses: List[dict] = []
     for license_info in licenses:
         license = license_info["license"]
@@ -97,16 +99,21 @@ def check_licenses(allowed_licenses: List[str], whitelisted_packages: List[str],
         print("Found unallowed licenses:")
         for bad_license in bad_licenses:
             print(f"\t{bad_license['package']}: {bad_license['license']}")
-        sys.exit(1)
+        return False
 
-    print("All licenses ok")
+    return True
 
 
 def main():
     allowed_licenses, whitelisted_packages = read_pyproject_file()
     installed_licenses = read_installed_license_metadata()
-    check_whitelisted_packages(whitelisted_packages, installed_licenses)
-    check_licenses(allowed_licenses, whitelisted_packages, installed_licenses)
+    packages_ok = check_whitelisted_packages(whitelisted_packages, installed_licenses)
+    licenses_ok = check_licenses(allowed_licenses, whitelisted_packages, installed_licenses)
+
+    if packages_ok and licenses_ok:
+        print("All licenses ok")
+    else:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
