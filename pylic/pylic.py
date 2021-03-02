@@ -4,9 +4,9 @@ from typing import List, Tuple
 import toml
 
 if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
-    from importlib.metadata import distributions
+    from importlib.metadata import Distribution, distributions
 else:
-    from importlib_metadata import distributions  # type: ignore
+    from importlib_metadata import Distribution, distributions  # type: ignore
 
 
 def read_pyproject_file() -> Tuple[List[str], List[str]]:
@@ -35,17 +35,33 @@ def read_pyproject_file() -> Tuple[List[str], List[str]]:
     return (allowed_licenses, whitelisted_packages)
 
 
+def read_license_from_classifier(distribution: Distribution) -> str:
+    for key, content in distribution.metadata.items():
+        if key == "Classifier":
+            parts = [part.strip() for part in content.split("::")]
+            if parts[0] == "License":
+                return parts[-1]
+
+    return "unknown"
+
+
+def read_licenses_from_metadata(distribution: Distribution) -> str:
+    return distribution.metadata.get("License", "unknown")
+
+
 def read_installed_license_metadata() -> List[dict]:
     installed_distributions = distributions()
 
     installed_licenses: List[dict] = []
     for distribution in installed_distributions:
         package_name = distribution.metadata["Name"]
-        licenses_string = distribution.metadata.get("License", "unknown")
-        new_licenses = [
-            {"license": license_name.strip(), "package": package_name} for license_name in licenses_string.split(",")
-        ]
-        installed_licenses += new_licenses
+
+        license_string = read_license_from_classifier(distribution)
+        if license_string == "unknown":
+            license_string = read_licenses_from_metadata(distribution)
+
+        new_license = {"license": license_string, "package": package_name}
+        installed_licenses.append(new_license)
 
     return installed_licenses
 

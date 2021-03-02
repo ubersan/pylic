@@ -50,16 +50,10 @@ allowed_licenses = [
     "PSF",
     "MPLv2.0",
     "MIT Licences",
-]
-
-whitelisted_packages = [
-    "keyring",
-    "pep517",
-    "twine",
-    "jeepney",
-    "setuptools",
-    "zipp",
-    "importlib-metadata",
+    "Python Software Foundation License",
+    "Mozilla Public License 2.0 (MPL 2.0)",
+    "GNU Library or Lesser General Public License (LGPL)",
+    "Python Software Foundation License",
 ]
 
 [tool.black]
