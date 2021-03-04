@@ -42,7 +42,7 @@ allowed_licenses = [
 line_length = 120
 
 [tool.coverage.run]
-omit = ["setup.py"]
+omit = ["setup.py", "tests/*"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
