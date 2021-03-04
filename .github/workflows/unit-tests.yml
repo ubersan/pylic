@@ -17,8 +17,6 @@ jobs:
       run: |
         pip install pytest
         pip install pytest-cov
-        pwd
-        ls -la
         pytest --cov=./ --cov-report=xml
     - name: Upload code coverage to Codecov
       uses: codecov/codecov-action@v1
