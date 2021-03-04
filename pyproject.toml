@@ -23,6 +23,7 @@ pytest-cov = "^2.11.1"
 
 [tool.taskipy.tasks]
 release = "scripts/create_new_release.sh"
+test = "pytest --cov=./ --cov-report=xml"
 
 [tool.pylic]
 allowed_licenses = [
@@ -39,6 +40,9 @@ allowed_licenses = [
 
 [tool.black]
 line_length = 120
+
+[tool.coverage.run]
+omit = ["setup.py"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
