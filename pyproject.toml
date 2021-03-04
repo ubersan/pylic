@@ -18,6 +18,8 @@ setuptools = "^53.0.0"
 wheel = "^0.36.2"
 twine = "^3.3.0"
 taskipy = "^1.6.0"
+pytest = "^6.2.2"
+pytest-cov = "^2.11.1"
 
 [tool.taskipy.tasks]
 release = "scripts/create_new_release.sh"
