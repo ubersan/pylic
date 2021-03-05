@@ -1,5 +1,6 @@
 import pytest
-from pylic.pylic import read_pyproject_file
+from pylic.pylic import read_license_from_classifier, read_licenses_from_metadata, read_pyproject_file
+from pytest_mock import MockerFixture
 from toml import TomlDecodeError
 
 
@@ -33,3 +34,40 @@ def test_unknown_license_can_not_be_allowed():
         exception.value.args[0]
         == "'unknown' can't be an allowed license. Whitelist the corresponding packages instead."
     )
+
+
+def test_reading_from_classifier_yields_correct_license(mocker: MockerFixture):
+    distribution = mocker.MagicMock()
+    expected_license = "pylic license"
+    distribution.metadata = {"Classifier": f"License :: {expected_license}"}
+    license = read_license_from_classifier(distribution)
+    assert license == expected_license
+
+
+def test_reading_from_classifier_with_no_classifier_yields_unknown_license(mocker: MockerFixture):
+    distribution = mocker.MagicMock()
+    distribution.metadata = {"Classifier": "Development Status :: 4 - Beta"}
+    license = read_license_from_classifier(distribution)
+    assert license == "unknown"
+
+
+def test_reading_license_from_metadata_yields_correct_license(mocker: MockerFixture):
+    distribution = mocker.MagicMock()
+    expected_license = "uber license"
+    distribution.metadata = {"License": expected_license}
+    license = read_licenses_from_metadata(distribution)
+    assert license == expected_license
+
+
+def test_reading_license_from_metadata_without_license_entry_yields_unknown_license(mocker: MockerFixture):
+    distribution = mocker.MagicMock()
+    distribution.metadata = {"Classifier": "Development Status :: 3 - Alpha"}
+    license = read_licenses_from_metadata(distribution)
+    assert license == "unknown"
+
+
+# def test_read_installed_license_metadata(mocker: MockerFixture):
+#    mock = mocker.patch("pylic.pylic.distributions")
+#    mock.return_value = 313
+#    installed_licenses = read_installed_license_metadata()
+#    assert installed_licenses == 3
