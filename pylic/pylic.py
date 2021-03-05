@@ -43,7 +43,6 @@ def read_licenses_from_metadata(distribution: Distribution) -> str:
 
 def read_installed_license_metadata() -> List[dict]:
     installed_distributions = distributions()
-    return installed_distributions
 
     installed_licenses: List[dict] = []
     for distribution in installed_distributions:
