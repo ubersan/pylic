@@ -9,26 +9,18 @@ else:
     from importlib_metadata import Distribution, distributions  # type: ignore
 
 
-def read_pyproject_file() -> Tuple[List[str], List[str]]:
-    with open("pyproject.toml", "r") as pyproject_file:
+def read_pyproject_file(filepath: str = "pyproject.toml") -> Tuple[List[str], List[str]]:
+    with open(filepath, "r") as pyproject_file:
         try:
             project_config = toml.load(pyproject_file)
         except Exception as exception:
-            print("Could not load pyproject.toml file.")
             raise exception
 
-    tool_config = project_config.get("tool", None)
-    if tool_config is None:
-        raise Exception("No 'tool' section found in the pyproject.toml file. Excpecting a [tool.pylic] section.")
-
-    pylic_config = tool_config.get("pylic", None)
-    if pylic_config is None:
-        raise Exception("No 'tool.pylic' section found in the pyproject.toml file. Excpecting a [tool.pylic] section.")
-
+    pylic_config = project_config.get("tool", {}).get("pylic", {})
     allowed_licenses: List[str] = pylic_config.get("allowed_licenses", [])
 
     if "unknown" in [allowed_license.lower() for allowed_license in allowed_licenses]:
-        raise Exception("'unknown' can't be an allowed license. Whitelist the corresponding packages instead.")
+        raise ValueError("'unknown' can't be an allowed license. Whitelist the corresponding packages instead.")
 
     whitelisted_packages: List[str] = pylic_config.get("whitelisted_packages", [])
 

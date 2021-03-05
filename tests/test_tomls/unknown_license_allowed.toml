@@ -1,0 +1,7 @@
+[tool.pylic]
+allowed_licenses = [
+    "MIT Licenses",
+    "BSD",
+    "UNKNOWN",
+    "Apache Software License",
+]
