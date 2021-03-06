@@ -37,25 +37,56 @@ def read_license_from_classifier(distribution: Distribution) -> str:
     return "unknown"
 
 
-def read_licenses_from_metadata(distribution: Distribution) -> str:
+def read_license_from_metadata(distribution: Distribution) -> str:
     return distribution.metadata.get("License", "unknown")
 
 
-def read_installed_license_metadata() -> List[dict]:
+def read_all_installed_licenses_metadata() -> List[dict]:
     installed_distributions = distributions()
 
     installed_licenses: List[dict] = []
     for distribution in installed_distributions:
         package_name = distribution.metadata["Name"]
-
         license_string = read_license_from_classifier(distribution)
         if license_string == "unknown":
-            license_string = read_licenses_from_metadata(distribution)
+            license_string = read_license_from_metadata(distribution)
 
         new_license = {"license": license_string, "package": package_name}
         installed_licenses.append(new_license)
 
     return installed_licenses
+
+
+def check_for_unnecessary_allowed_licenses(allowed_licenses: List[str], installed_licenses: List[dict]) -> None:
+    installed_license_names = [license_info["license"].lower() for license_info in installed_licenses]
+
+    unnecessary_allowed_licenses = []
+    lower_allowed_licenses = [allowed_license.lower() for allowed_license in allowed_licenses]
+
+    for index, allowed_license in enumerate(lower_allowed_licenses):
+        if allowed_license not in installed_license_names:
+            unnecessary_allowed_licenses.append(allowed_licenses[index])
+
+    if len(unnecessary_allowed_licenses) > 0:
+        print("Warning, found allowed licenses that are not used by any installed package:")
+        for unnecessary_allowed_license in unnecessary_allowed_licenses:
+            print(f"\t{unnecessary_allowed_license}")
+
+
+def check_for_unnecessary_whitelisted_packages(whitelisted_packages: List[str], installed_licenses: List[dict]) -> None:
+    installed_package_names = [license_info["package"].lower() for license_info in installed_licenses]
+
+    unnecessary_allowed_packages = []
+    lower_whitelisted_packages = [whitelisted_package.lower() for whitelisted_package in whitelisted_packages]
+
+    for index, whitelisted_package in enumerate(lower_whitelisted_packages):
+        if whitelisted_package not in installed_package_names:
+            unnecessary_allowed_packages.append(whitelisted_packages[index])
+
+    if len(unnecessary_allowed_packages) > 0:
+        print("Warning, found whitelisted packages that are not installed:")
+        for unnecessary_allowed_package in unnecessary_allowed_packages:
+            print(f"\t{unnecessary_allowed_package}")
 
 
 def check_whitelisted_packages(whitelisted_packages: List[str], licenses: List[dict]) -> bool:
@@ -102,26 +133,11 @@ def check_licenses(
     return True
 
 
-def check_for_unnecessary_allowed_licenses(allowed_licenses: List[str], installed_licenses: List[dict]) -> None:
-    installed_license_names = [license_info["license"].lower() for license_info in installed_licenses]
-
-    unnecessary_allowed_licenses = []
-    lower_allowed_licenses = [allowed_license.lower() for allowed_license in allowed_licenses]
-
-    for index, allowed_license in enumerate(lower_allowed_licenses):
-        if allowed_license not in installed_license_names:
-            unnecessary_allowed_licenses.append(allowed_licenses[index])
-
-    if len(unnecessary_allowed_licenses) > 0:
-        print("Warning, found allowed licenses that are not used by any installed package:")
-        for unnecessary_allowed_license in unnecessary_allowed_licenses:
-            print(f"\t{unnecessary_allowed_license}")
-
-
 def main():
     allowed_licenses, whitelisted_packages = read_pyproject_file()
-    installed_licenses = read_installed_license_metadata()
+    installed_licenses = read_all_installed_licenses_metadata()
     check_for_unnecessary_allowed_licenses(allowed_licenses, installed_licenses)
+    check_for_unnecessary_whitelisted_packages(whitelisted_packages, installed_licenses)
     packages_ok = check_whitelisted_packages(whitelisted_packages, installed_licenses)
     licenses_ok = check_licenses(allowed_licenses, whitelisted_packages, installed_licenses)
 
