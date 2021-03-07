@@ -43,7 +43,7 @@ allowed_licenses = [
 line_length = 120
 
 [tool.coverage.run]
-omit = ["setup.py", "tests/*"]
+omit = ["setup.py", "pylic/__main__.py", "tests/*"]
 
 [tool.coverage.report]
 exclude_lines = [
