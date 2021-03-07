@@ -5,6 +5,9 @@ import pytest
 from pylic.pylic import (
     check_for_unnecessary_allowed_licenses,
     check_for_unnecessary_whitelisted_packages,
+    check_licenses,
+    check_whitelisted_packages,
+    main,
     read_all_installed_licenses_metadata,
     read_license_from_classifier,
     read_license_from_metadata,
@@ -194,3 +197,132 @@ def test_correct_unnecessary_whitelisted_packages_found(mocker: MockerFixture, p
     assert print_mock.call_count == 2
     args, _ = print_mock.call_args_list[1]
     assert args[0] == f"\t{package}3"
+
+
+def test_all_whitlisted_packages_valid_if_no_whitelisted_packages_nor_any_packages_installed(mocker: MockerFixture):
+    print_mock = mocker.patch("builtins.print")
+    packages_valid = check_whitelisted_packages([], [])
+    assert packages_valid
+    assert print_mock.call_count == 0
+
+
+def test_whitelisted_packages_invalid_if_corresponding_license_not_unknown(mocker: MockerFixture, package: str):
+    print_mock = mocker.patch("builtins.print")
+    packages_valied = check_whitelisted_packages([package], [{"license": "not_unknown", "package": package}])
+    assert not packages_valied
+    assert print_mock.call_count == 2
+
+
+def test_whitelisted_packages_ok_if_corresponding_licenses_are_unknown(mocker: MockerFixture, package: str):
+    print_mock = mocker.patch("builtins.print")
+    packages_valied = check_whitelisted_packages([package], [{"license": "unknown", "package": package}])
+    assert packages_valied
+    assert print_mock.call_count == 0
+
+
+def test_all_licenses_ok_if_no_packages_installed_or_whitelisted_and_no_liceses_allowed():
+    all_licenses_ok = check_licenses(allowed_licenses=[], whitelisted_packages=[], installed_licenses=[])
+    assert all_licenses_ok
+
+
+def test_all_licenses_ok_if_unknown_license_is_whitelisted(package: str):
+    all_licenses_ok = check_licenses(
+        allowed_licenses=[],
+        whitelisted_packages=[package],
+        installed_licenses=[{"license": "unknown", "package": package}],
+    )
+    assert all_licenses_ok
+
+
+def test_all_licenses_ok_if_licenses_are_all_allowed(package: str, license: str):
+    all_licenses_ok = check_licenses(
+        allowed_licenses=[f"{license}1", f"{license}2"],
+        whitelisted_packages=[],
+        installed_licenses=[
+            {"license": f"{license}1", "package": package},
+            {"license": f"{license}2", "package": package},
+        ],
+    )
+    assert all_licenses_ok
+
+
+def test_all_invalid_licenses_are_found(mocker: MockerFixture, package: str, license: str):
+    print_mock = mocker.patch("builtins.print")
+    all_licenses_ok = check_licenses(
+        allowed_licenses=[f"{license}2"],
+        whitelisted_packages=[],
+        installed_licenses=[
+            {"license": f"{license}1", "package": package},
+            {"license": f"{license}2", "package": package},
+            {"license": f"{license}3", "package": package},
+            {"license": f"{license}4", "package": package},
+        ],
+    )
+    assert not all_licenses_ok
+    assert print_mock.call_count == 4
+    args, _ = print_mock.call_args_list[1]
+    assert args[0] == f"\t{package}: {license}1"
+    args, _ = print_mock.call_args_list[2]
+    assert args[0] == f"\t{package}: {license}3"
+    args, _ = print_mock.call_args_list[3]
+    assert args[0] == f"\t{package}: {license}4"
+
+
+def test_main_prints_success_and_exits_with_return_value_0_in_good_case(
+    mocker: MockerFixture, package: str, license: str
+):
+    mock_read_pyproject_file = mocker.patch("pylic.pylic.read_pyproject_file")
+    mock_read_pyproject_file.return_value = ([license], [package])
+    mock_read_installed_licenses = mocker.patch("pylic.pylic.read_all_installed_licenses_metadata")
+    mock_read_installed_licenses.return_value = [
+        {"license": license, "package": f"{package}1"},
+        {"license": "unknown", "package": package},
+    ]
+    print_mock = mocker.patch("builtins.print")
+    main()
+    assert print_mock.call_count == 1
+    args, _ = print_mock.call_args_list[0]
+    assert args[0] == "All licenses ok"
+
+
+def test_main_prints_errors_and_exits_with_return_value_1_with_bad_whitelisted_packages(
+    mocker: MockerFixture, package: str, license: str
+):
+    mock_read_pyproject_file = mocker.patch("pylic.pylic.read_pyproject_file")
+    mock_read_pyproject_file.return_value = ([license, f"{license}_not_unknown"], [package])
+    mock_read_installed_licenses = mocker.patch("pylic.pylic.read_all_installed_licenses_metadata")
+    mock_read_installed_licenses.return_value = [
+        {"license": license, "package": f"{package}1"},
+        {"license": f"{license}_not_unknown", "package": package},
+    ]
+    print_mock = mocker.patch("builtins.print")
+    sys_exit_mock = mocker.patch("sys.exit")
+    main()
+    assert sys_exit_mock.called
+    assert print_mock.call_count == 2
+    args, _ = print_mock.call_args_list[0]
+    assert args[0] == "Found whitelisted packages with a known license. Instead allow these licenses explicitly:"
+    args, _ = print_mock.call_args_list[1]
+    assert args[0] == f"\t{package}: {license}_not_unknown"
+
+
+def test_main_prints_errors_and_exits_with_return_value_1_with_unallowed_licenses_are_installed(
+    mocker: MockerFixture, package: str, license: str
+):
+    mock_read_pyproject_file = mocker.patch("pylic.pylic.read_pyproject_file")
+    mock_read_pyproject_file.return_value = ([license], [package])
+    mock_read_installed_licenses = mocker.patch("pylic.pylic.read_all_installed_licenses_metadata")
+    mock_read_installed_licenses.return_value = [
+        {"license": license, "package": f"{package}1"},
+        {"license": "unknown", "package": package},
+        {"license": f"{license}2", "package": f"{package}2"},
+    ]
+    print_mock = mocker.patch("builtins.print")
+    sys_exit_mock = mocker.patch("sys.exit")
+    main()
+    sys_exit_mock.assert_called_once()
+    assert print_mock.call_count == 2
+    args, _ = print_mock.call_args_list[0]
+    assert args[0] == "Found unallowed licenses:"
+    args, _ = print_mock.call_args_list[1]
+    assert args[0] == f"\t{package}2: {license}2"

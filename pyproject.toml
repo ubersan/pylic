@@ -45,6 +45,12 @@ line_length = 120
 [tool.coverage.run]
 omit = ["setup.py", "tests/*"]
 
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "from importlib_metadata import Distribution, distributions  # type: ignore", # tested by integration tests
+]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
