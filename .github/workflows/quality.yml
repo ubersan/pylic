@@ -15,6 +15,10 @@ jobs:
         python-version: 3.9
     - name: Install poetry
       run: pip install poetry
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: poetry-${{ hashFiles('poetry.lock') }}
     - name: Install dependencies
       run: poetry install --no-root
     - name: Lint, format, sort imports & typecheck
