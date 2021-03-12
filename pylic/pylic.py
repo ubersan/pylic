@@ -22,9 +22,9 @@ def read_pyproject_file(filepath: str = "pyproject.toml") -> Tuple[List[str], Li
     if "unknown" in [safe_license.lower() for safe_license in safe_licenses]:
         raise ValueError("'unknown' can't be an safe license. Whitelist the corresponding packages instead.")
 
-    whitelisted_packages: List[str] = pylic_config.get("whitelisted_packages", [])
+    unsafe_packages: List[str] = pylic_config.get("unsafe_packages", [])
 
-    return (safe_licenses, whitelisted_packages)
+    return (safe_licenses, unsafe_packages)
 
 
 def read_license_from_classifier(distribution: Distribution) -> str:
@@ -73,41 +73,41 @@ def check_for_unnecessary_safe_licenses(safe_licenses: List[str], installed_lice
             print(f"\t{unnecessary_safe_license}")
 
 
-def check_for_unnecessary_whitelisted_packages(whitelisted_packages: List[str], installed_licenses: List[dict]) -> None:
+def check_for_unnecessary_unsafe_packages(unsafe_packages: List[str], installed_licenses: List[dict]) -> None:
     installed_package_names = [license_info["package"].lower() for license_info in installed_licenses]
 
     unnecessary_safe_packages = []
-    lower_whitelisted_packages = [whitelisted_package.lower() for whitelisted_package in whitelisted_packages]
+    lower_unsafe_packages = [unsafe_package.lower() for unsafe_package in unsafe_packages]
 
-    for index, whitelisted_package in enumerate(lower_whitelisted_packages):
-        if whitelisted_package not in installed_package_names:
-            unnecessary_safe_packages.append(whitelisted_packages[index])
+    for index, unsafe_package in enumerate(lower_unsafe_packages):
+        if unsafe_package not in installed_package_names:
+            unnecessary_safe_packages.append(unsafe_packages[index])
 
     if len(unnecessary_safe_packages) > 0:
-        print("Warning, found whitelisted packages that are not installed:")
+        print("Warning, found unsafe packages that are not installed:")
         for unnecessary_safe_package in unnecessary_safe_packages:
             print(f"\t{unnecessary_safe_package}")
 
 
-def check_whitelisted_packages(whitelisted_packages: List[str], licenses: List[dict]) -> bool:
-    bad_whitelisted_packages: List[dict] = []
+def check_unsafe_packages(unsafe_packages: List[str], licenses: List[dict]) -> bool:
+    bad_unsafe_packages: List[dict] = []
     for license_info in licenses:
         license = license_info["license"]
         package = license_info["package"]
 
-        if package in whitelisted_packages and license.lower() != "unknown":
-            bad_whitelisted_packages.append({"license": license, "package": package})
+        if package in unsafe_packages and license.lower() != "unknown":
+            bad_unsafe_packages.append({"license": license, "package": package})
 
-    if len(bad_whitelisted_packages) > 0:
-        print("Found whitelisted packages with a known license. Instead allow these licenses explicitly:")
-        for bad_package in bad_whitelisted_packages:
+    if len(bad_unsafe_packages) > 0:
+        print("Found unsafe packages with a known license. Instead allow these licenses explicitly:")
+        for bad_package in bad_unsafe_packages:
             print(f"\t{bad_package['package']}: {bad_package['license']}")
         return False
 
     return True
 
 
-def check_licenses(safe_licenses: List[str], whitelisted_packages: List[str], installed_licenses: List[dict]) -> bool:
+def check_licenses(safe_licenses: List[str], unsafe_packages: List[str], installed_licenses: List[dict]) -> bool:
     bad_licenses: List[dict] = []
     lower_safe_licenses = [safe_license.lower() for safe_license in safe_licenses]
 
@@ -115,7 +115,7 @@ def check_licenses(safe_licenses: List[str], whitelisted_packages: List[str], in
         license = license_info["license"]
         package = license_info["package"]
 
-        if (license.lower() == "unknown" and package in whitelisted_packages) or license.lower() in lower_safe_licenses:
+        if (license.lower() == "unknown" and package in unsafe_packages) or license.lower() in lower_safe_licenses:
             continue
 
         bad_licenses.append({"license": license, "package": package})
@@ -130,12 +130,12 @@ def check_licenses(safe_licenses: List[str], whitelisted_packages: List[str], in
 
 
 def main():
-    safe_licenses, whitelisted_packages = read_pyproject_file()
+    safe_licenses, unsafe_packages = read_pyproject_file()
     installed_licenses = read_all_installed_licenses_metadata()
     check_for_unnecessary_safe_licenses(safe_licenses, installed_licenses)
-    check_for_unnecessary_whitelisted_packages(whitelisted_packages, installed_licenses)
-    packages_ok = check_whitelisted_packages(whitelisted_packages, installed_licenses)
-    licenses_ok = check_licenses(safe_licenses, whitelisted_packages, installed_licenses)
+    check_for_unnecessary_unsafe_packages(unsafe_packages, installed_licenses)
+    packages_ok = check_unsafe_packages(unsafe_packages, installed_licenses)
+    licenses_ok = check_licenses(safe_licenses, unsafe_packages, installed_licenses)
 
     if packages_ok and licenses_ok:
         print("All licenses ok")
