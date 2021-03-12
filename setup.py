@@ -1,4 +1,4 @@
-import setuptools
+import setuptools  # type: ignore
 import toml
 
 with open("README.md", "r") as readme_file:

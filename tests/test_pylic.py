@@ -2,6 +2,9 @@ import random
 import string
 
 import pytest
+from pytest_mock import MockerFixture
+from toml import TomlDecodeError
+
 from pylic.pylic import (
     check_for_unnecessary_safe_licenses,
     check_for_unnecessary_unsafe_packages,
@@ -13,8 +16,6 @@ from pylic.pylic import (
     read_license_from_metadata,
     read_pyproject_file,
 )
-from pytest_mock import MockerFixture
-from toml import TomlDecodeError
 
 
 def random_string():

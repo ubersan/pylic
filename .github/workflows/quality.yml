@@ -1,11 +1,11 @@
-name: Unit tests & Coverage Report
+name: Quality checks
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 jobs:
-  unit-test:
+  quality-checks:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -13,6 +13,17 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+    - name: Install poetry
+      run: pip install poetry
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: poetry-${{ hashFiles('poetry.lock') }}
+    - name: Install dependencies
+      run: poetry install --no-root
+    - name: Lint, format, sort imports & typecheck
+      run: |
+        poetry run task quality
     - name: Run tests & generate coverage report
       run: |
         pip install pytest pytest_mock pytest-cov
