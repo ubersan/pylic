@@ -3,7 +3,7 @@ import string
 
 import pytest
 from pylic.pylic import (
-    check_for_unnecessary_allowed_licenses,
+    check_for_unnecessary_safe_licenses,
     check_for_unnecessary_whitelisted_packages,
     check_licenses,
     check_whitelisted_packages,
@@ -43,9 +43,9 @@ def test_correct_exception_raised_if_toml_file_contains_invalid_content():
         read_pyproject_file("tests/test_tomls/invalid.toml")
 
 
-def test_no_licenses_allowed_if_no_pylic_tool_section_in_toml_file_found():
-    allowed_licenses, _ = read_pyproject_file("tests/test_tomls/empty.toml")
-    assert len(allowed_licenses) == 0
+def test_no_licenses_safe_if_no_pylic_tool_section_in_toml_file_found():
+    safe_licenses, _ = read_pyproject_file("tests/test_tomls/empty.toml")
+    assert len(safe_licenses) == 0
 
 
 def test_no_packages_whitelisted_if_no_pylic_tool_section_in_toml_file_found():
@@ -53,13 +53,12 @@ def test_no_packages_whitelisted_if_no_pylic_tool_section_in_toml_file_found():
     assert len(whitelisted_packages) == 0
 
 
-def test_unknown_license_can_not_be_allowed():
+def test_unknown_license_can_not_be_safe():
     with pytest.raises(ValueError) as exception:
         read_pyproject_file("tests/test_tomls/unknown_license_allowed.toml")
 
     assert (
-        exception.value.args[0]
-        == "'unknown' can't be an allowed license. Whitelist the corresponding packages instead."
+        exception.value.args[0] == "'unknown' can't be an safe license. Whitelist the corresponding packages instead."
     )
 
 
@@ -133,32 +132,32 @@ def test_correct_license_metadata_is_returned_if_no_classifiers_are_present(
     assert installed_licenses[1] == {"license": "unknown", "package": f"{package}2"}
 
 
-def test_no_unncessary_licenses_found_if_no_allowed_nor_installed_licenses_present(mocker: MockerFixture):
+def test_no_unncessary_licenses_found_if_no_safe_nor_installed_licenses_present(mocker: MockerFixture):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_allowed_licenses(allowed_licenses=[], installed_licenses=[])
+    check_for_unnecessary_safe_licenses(safe_licenses=[], installed_licenses=[])
     print_mock.assert_not_called()
 
 
-def test_no_unncessary_licenses_found_if_no_allowed_licenses_provided(mocker: MockerFixture, license: str):
+def test_no_unncessary_licenses_found_if_no_safe_licenses_provided(mocker: MockerFixture, license: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_allowed_licenses(
-        allowed_licenses=[], installed_licenses=[{"license": f"{license}1"}, {"license": f"{license}2"}]
+    check_for_unnecessary_safe_licenses(
+        safe_licenses=[], installed_licenses=[{"license": f"{license}1"}, {"license": f"{license}2"}]
     )
     print_mock.assert_not_called()
 
 
 def test_all_licenses_unnecessary_if_no_installed_licenses_found(mocker: MockerFixture, license: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_allowed_licenses(
-        allowed_licenses=[f"{license}1", f"{license}2", f"{license}3"], installed_licenses=[]
+    check_for_unnecessary_safe_licenses(
+        safe_licenses=[f"{license}1", f"{license}2", f"{license}3"], installed_licenses=[]
     )
     assert print_mock.call_count == 4
 
 
-def test_correct_unnecessary_allowed_licenses_found(mocker: MockerFixture, license: str):
+def test_correct_unnecessary_safe_licenses_found(mocker: MockerFixture, license: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_allowed_licenses(
-        allowed_licenses=[f"{license}2", f"{license}3"],
+    check_for_unnecessary_safe_licenses(
+        safe_licenses=[f"{license}2", f"{license}3"],
         installed_licenses=[{"license": f"{license}1"}, {"license": f"{license}2"}],
     )
     assert print_mock.call_count == 2
@@ -220,23 +219,23 @@ def test_whitelisted_packages_ok_if_corresponding_licenses_are_unknown(mocker: M
     assert print_mock.call_count == 0
 
 
-def test_all_licenses_ok_if_no_packages_installed_or_whitelisted_and_no_liceses_allowed():
-    all_licenses_ok = check_licenses(allowed_licenses=[], whitelisted_packages=[], installed_licenses=[])
+def test_all_licenses_ok_if_no_packages_installed_or_whitelisted_and_no_liceses_safe():
+    all_licenses_ok = check_licenses(safe_licenses=[], whitelisted_packages=[], installed_licenses=[])
     assert all_licenses_ok
 
 
 def test_all_licenses_ok_if_unknown_license_is_whitelisted(package: str):
     all_licenses_ok = check_licenses(
-        allowed_licenses=[],
+        safe_licenses=[],
         whitelisted_packages=[package],
         installed_licenses=[{"license": "unknown", "package": package}],
     )
     assert all_licenses_ok
 
 
-def test_all_licenses_ok_if_licenses_are_all_allowed(package: str, license: str):
+def test_all_licenses_ok_if_licenses_are_all_safe(package: str, license: str):
     all_licenses_ok = check_licenses(
-        allowed_licenses=[f"{license}1", f"{license}2"],
+        safe_licenses=[f"{license}1", f"{license}2"],
         whitelisted_packages=[],
         installed_licenses=[
             {"license": f"{license}1", "package": package},
@@ -249,7 +248,7 @@ def test_all_licenses_ok_if_licenses_are_all_allowed(package: str, license: str)
 def test_all_invalid_licenses_are_found(mocker: MockerFixture, package: str, license: str):
     print_mock = mocker.patch("builtins.print")
     all_licenses_ok = check_licenses(
-        allowed_licenses=[f"{license}2"],
+        safe_licenses=[f"{license}2"],
         whitelisted_packages=[],
         installed_licenses=[
             {"license": f"{license}1", "package": package},
@@ -306,7 +305,7 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_bad_whitelisted_p
     assert args[0] == f"\t{package}: {license}_not_unknown"
 
 
-def test_main_prints_errors_and_exits_with_return_value_1_with_unallowed_licenses_are_installed(
+def test_main_prints_errors_and_exits_with_return_value_1_with_unsafe_licenses_are_installed(
     mocker: MockerFixture, package: str, license: str
 ):
     mock_read_pyproject_file = mocker.patch("pylic.pylic.read_pyproject_file")
@@ -323,6 +322,6 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_unallowed_license
     sys_exit_mock.assert_called_once()
     assert print_mock.call_count == 2
     args, _ = print_mock.call_args_list[0]
-    assert args[0] == "Found unallowed licenses:"
+    assert args[0] == "Found unsafe licenses:"
     args, _ = print_mock.call_args_list[1]
     assert args[0] == f"\t{package}2: {license}2"

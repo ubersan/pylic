@@ -27,7 +27,7 @@ release = "scripts/create_new_release.sh"
 test = "pytest --cov=./ --cov-report=xml"
 
 [tool.pylic]
-allowed_licenses = [
+safe_licenses = [
     "Public Domain",
     "BSD License",
     "Apache Software License",

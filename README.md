@@ -10,7 +10,7 @@ Principles:
 
 ```pyproject.toml
 [tool.pylic]
-allowed_licenses = [
+safe_licenses = [
     'MIT',
     'BSD'
 ]
