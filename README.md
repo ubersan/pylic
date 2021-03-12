@@ -4,18 +4,18 @@ Reads the pyproject.toml file and checks all installed licenses recursively.
 
 Principles:
 - Every license has to be allowed explicitly (case-insensitive comparison).
-- Packages with `UNKNOWN` licenses have to be explicitly whitelisted. Packages with a known license cannot be whitelisted.
+- All packages without license are considered unsafe and have to be listed as such.
 
 ## Example Configuration
 
 ```pyproject.toml
 [tool.pylic]
-allowed_licenses = [
+safe_licenses = [
     'MIT',
     'BSD'
 ]
-whitelisted_packages = [
-    "packageWithUnknownLicense"
+unsafe_packages = [
+    "unlicensedPackage"
 ]
 ```
 
