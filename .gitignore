@@ -136,3 +136,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# GitHub container registry access token
+.ghcr-access-token

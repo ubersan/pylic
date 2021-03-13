@@ -25,6 +25,7 @@ isort = "^5.7.0"
 
 [tool.taskipy.tasks]
 release = "scripts/create_new_release.sh"
+publish_docker = "scripts/publish_new_docker.sh"
 test = "pytest --cov=./ --cov-report=xml"
 quality = "black . && flake8 --count . && isort . && mypy ."
 
