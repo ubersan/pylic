@@ -28,3 +28,4 @@ jobs:
     - name: Test with Python ${{ matrix.python-version }}
       run: |
         python -m pylic
+        pylic
