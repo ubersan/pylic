@@ -135,32 +135,36 @@ def test_correct_license_metadata_is_returned_if_no_classifiers_are_present(
 
 def test_no_unncessary_licenses_found_if_no_safe_nor_installed_licenses_present(mocker: MockerFixture):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_safe_licenses(safe_licenses=[], installed_licenses=[])
+    no_unncessary_licenses = check_for_unnecessary_safe_licenses(safe_licenses=[], installed_licenses=[])
+    assert no_unncessary_licenses
     print_mock.assert_not_called()
 
 
 def test_no_unncessary_licenses_found_if_no_safe_licenses_provided(mocker: MockerFixture, license: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_safe_licenses(
+    no_unncessary_licenses = check_for_unnecessary_safe_licenses(
         safe_licenses=[], installed_licenses=[{"license": f"{license}1"}, {"license": f"{license}2"}]
     )
+    assert no_unncessary_licenses
     print_mock.assert_not_called()
 
 
 def test_all_licenses_unnecessary_if_no_installed_licenses_found(mocker: MockerFixture, license: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_safe_licenses(
+    no_unncessary_licenses = check_for_unnecessary_safe_licenses(
         safe_licenses=[f"{license}1", f"{license}2", f"{license}3"], installed_licenses=[]
     )
+    assert not no_unncessary_licenses
     assert print_mock.call_count == 4
 
 
 def test_correct_unnecessary_safe_licenses_found(mocker: MockerFixture, license: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_safe_licenses(
+    no_unncessary_licenses = check_for_unnecessary_safe_licenses(
         safe_licenses=[f"{license}2", f"{license}3"],
         installed_licenses=[{"license": f"{license}1"}, {"license": f"{license}2"}],
     )
+    assert not no_unncessary_licenses
     assert print_mock.call_count == 2
     args, _ = print_mock.call_args_list[1]
     assert args[0] == f"\t{license}3"
@@ -168,32 +172,36 @@ def test_correct_unnecessary_safe_licenses_found(mocker: MockerFixture, license:
 
 def test_no_unncessary_packages_found_if_no_unsafe_nor_installed_packages_present(mocker: MockerFixture):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_unsafe_packages(unsafe_packages=[], installed_licenses=[])
+    no_unncessary_packages = check_for_unnecessary_unsafe_packages(unsafe_packages=[], installed_licenses=[])
+    assert no_unncessary_packages
     print_mock.assert_not_called()
 
 
 def test_no_unncessary_packages_found_if_no_unsafe_packages_provided(mocker: MockerFixture, package: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_unsafe_packages(
+    no_unncessary_packages = check_for_unnecessary_unsafe_packages(
         unsafe_packages=[], installed_licenses=[{"package": f"{package}1"}, {"package": f"{package}2"}]
     )
+    assert no_unncessary_packages
     print_mock.assert_not_called()
 
 
 def test_all_packages_unnecessary_if_no_installed_packages_found(mocker: MockerFixture, package: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_unsafe_packages(
+    no_unncessary_packages = check_for_unnecessary_unsafe_packages(
         unsafe_packages=[f"{package}1", f"{package}2", f"{package}3"], installed_licenses=[]
     )
+    assert not no_unncessary_packages
     assert print_mock.call_count == 4
 
 
 def test_correct_unnecessary_unsafe_packages_found(mocker: MockerFixture, package: str):
     print_mock = mocker.patch("builtins.print")
-    check_for_unnecessary_unsafe_packages(
+    no_unncessary_packages = check_for_unnecessary_unsafe_packages(
         unsafe_packages=[f"{package}2", f"{package}3"],
         installed_licenses=[{"package": f"{package}1"}, {"package": f"{package}2"}],
     )
+    assert not no_unncessary_packages
     assert print_mock.call_count == 2
     args, _ = print_mock.call_args_list[1]
     assert args[0] == f"\t{package}3"
@@ -326,3 +334,39 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_unsafe_licenses_a
     assert args[0] == "Found unsafe licenses:"
     args, _ = print_mock.call_args_list[1]
     assert args[0] == f"\t{package}2: {license}2"
+
+
+def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_unsafe_packages_listed(
+    mocker: MockerFixture, package: str
+):
+    mock_read_pyproject_file = mocker.patch("pylic.pylic.read_pyproject_file")
+    mock_read_pyproject_file.return_value = ([], [package])
+    mock_read_installed_licenses = mocker.patch("pylic.pylic.read_all_installed_licenses_metadata")
+    mock_read_installed_licenses.return_value = []
+    print_mock = mocker.patch("builtins.print")
+    sys_exit_mock = mocker.patch("sys.exit")
+    main()
+    sys_exit_mock.assert_called_once()
+    assert print_mock.call_count == 2
+    args, _ = print_mock.call_args_list[0]
+    assert args[0] == "Unsafe packages listed which are not installed:"
+    args, _ = print_mock.call_args_list[1]
+    assert args[0] == f"\t{package}"
+
+
+def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_safe_licenses_listed(
+    mocker: MockerFixture, license: str
+):
+    mock_read_pyproject_file = mocker.patch("pylic.pylic.read_pyproject_file")
+    mock_read_pyproject_file.return_value = ([license], [])
+    mock_read_installed_licenses = mocker.patch("pylic.pylic.read_all_installed_licenses_metadata")
+    mock_read_installed_licenses.return_value = []
+    print_mock = mocker.patch("builtins.print")
+    sys_exit_mock = mocker.patch("sys.exit")
+    main()
+    sys_exit_mock.assert_called_once()
+    assert print_mock.call_count == 2
+    args, _ = print_mock.call_args_list[0]
+    assert args[0] == "Unncessary safe licenses listed which are not used any installed package:"
+    args, _ = print_mock.call_args_list[1]
+    assert args[0] == f"\t{license}"

@@ -39,7 +39,6 @@ safe_licenses = [
     "Python Software Foundation License",
     "Mozilla Public License 2.0 (MPL 2.0)",
     "GNU Library or Lesser General Public License (LGPL)",
-    "Python Software Foundation License",
 ]
 
 [tool.black]

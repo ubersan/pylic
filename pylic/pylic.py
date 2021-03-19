@@ -57,7 +57,7 @@ def read_all_installed_licenses_metadata() -> List[dict]:
     return installed_licenses
 
 
-def check_for_unnecessary_safe_licenses(safe_licenses: List[str], installed_licenses: List[dict]) -> None:
+def check_for_unnecessary_safe_licenses(safe_licenses: List[str], installed_licenses: List[dict]) -> bool:
     installed_license_names = [license_info["license"].lower() for license_info in installed_licenses]
 
     unnecessary_safe_licenses = []
@@ -68,25 +68,31 @@ def check_for_unnecessary_safe_licenses(safe_licenses: List[str], installed_lice
             unnecessary_safe_licenses.append(safe_licenses[index])
 
     if len(unnecessary_safe_licenses) > 0:
-        print("Warning, found safe licenses that are not used by any installed package:")
+        print("Unncessary safe licenses listed which are not used any installed package:")
         for unnecessary_safe_license in unnecessary_safe_licenses:
             print(f"\t{unnecessary_safe_license}")
+        return False
+
+    return True
 
 
-def check_for_unnecessary_unsafe_packages(unsafe_packages: List[str], installed_licenses: List[dict]) -> None:
+def check_for_unnecessary_unsafe_packages(unsafe_packages: List[str], installed_licenses: List[dict]) -> bool:
     installed_package_names = [license_info["package"].lower() for license_info in installed_licenses]
 
-    unnecessary_safe_packages = []
+    unnecessary_unsafe_packages = []
     lower_unsafe_packages = [unsafe_package.lower() for unsafe_package in unsafe_packages]
 
     for index, unsafe_package in enumerate(lower_unsafe_packages):
         if unsafe_package not in installed_package_names:
-            unnecessary_safe_packages.append(unsafe_packages[index])
+            unnecessary_unsafe_packages.append(unsafe_packages[index])
 
-    if len(unnecessary_safe_packages) > 0:
-        print("Warning, found unsafe packages that are not installed:")
-        for unnecessary_safe_package in unnecessary_safe_packages:
-            print(f"\t{unnecessary_safe_package}")
+    if len(unnecessary_unsafe_packages) > 0:
+        print("Unsafe packages listed which are not installed:")
+        for unnecessary_unsafe_package in unnecessary_unsafe_packages:
+            print(f"\t{unnecessary_unsafe_package}")
+        return False
+
+    return True
 
 
 def check_unsafe_packages(unsafe_packages: List[str], licenses: List[dict]) -> bool:
@@ -132,12 +138,12 @@ def check_licenses(safe_licenses: List[str], unsafe_packages: List[str], install
 def main():
     safe_licenses, unsafe_packages = read_pyproject_file()
     installed_licenses = read_all_installed_licenses_metadata()
-    check_for_unnecessary_safe_licenses(safe_licenses, installed_licenses)
-    check_for_unnecessary_unsafe_packages(unsafe_packages, installed_licenses)
+    no_unnecessary_safe_licenses = check_for_unnecessary_safe_licenses(safe_licenses, installed_licenses)
+    no_unncessary_unsafe_packages = check_for_unnecessary_unsafe_packages(unsafe_packages, installed_licenses)
     packages_ok = check_unsafe_packages(unsafe_packages, installed_licenses)
     licenses_ok = check_licenses(safe_licenses, unsafe_packages, installed_licenses)
 
-    if packages_ok and licenses_ok:
+    if all([no_unnecessary_safe_licenses, no_unncessary_unsafe_packages, packages_ok, licenses_ok]):
         print("All licenses ok")
     else:
         sys.exit(1)
