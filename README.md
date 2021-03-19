@@ -19,15 +19,6 @@ unsafe_packages = [
 ]
 ```
 
-## Docker
-
-You can also use `pylic` with docker. There is already a pre-built image available:
-
-```bash
-docker pull docker.pkg.github.com/sandrochuber/pylic/pylic:latest
-docker run --volume ${PWD}/pyproject.toml:/pyproject.toml docker.pkg.github.com/sandrochuber/pylic/pylic:latest
-```
-
 ## Development
 
 Required tools:
