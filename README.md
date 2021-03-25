@@ -11,8 +11,11 @@ Principles:
 ```pyproject.toml
 [tool.pylic]
 safe_licenses = [
-    'MIT',
-    'BSD'
+    "Apache Software License",
+    "Apache License 2.0",
+    "MIT License",
+    "Python Software Foundation License",
+    "Mozilla Public License 2.0 (MPL 2.0)",
 ]
 unsafe_packages = [
     "unlicensedPackage"
