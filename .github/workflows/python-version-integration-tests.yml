@@ -12,7 +12,7 @@ jobs:
         python-version: [3.6, 3.7, 3.8, 3.9]
     steps:
     - uses: actions/checkout@v2    
-    - name: Remove pylic pyproject.toml as it will be replaced
+    - name: Remove pylics own pyproject.toml
       run: rm pyproject.toml
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -38,5 +38,4 @@ jobs:
         EOT
     - name: Test with Python ${{ matrix.python-version }}
       run: |
-        python --version
         python -m pylic
