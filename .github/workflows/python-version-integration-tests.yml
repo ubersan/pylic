@@ -11,6 +11,9 @@ jobs:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
     steps:
+    - uses: actions/checkout@v2    
+    - name: Remove pylic pyproject.toml as it will be replaced
+      run: rm pyproject.toml
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -18,14 +21,22 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install pylic
-    - name: Create pyproject.toml and fill it with the necessary config
+        python -m pip install toml importlib-metadata
+    - name: Create pyproject.toml and fill it with the necessary config (<= python 3.7)
+      if: ${{ matrix.python-version == 3.6 || matrix.python-version == 3.7 }}
       run: |
         cat <<EOT >> pyproject.toml
         [tool.pylic]
         safe_licenses = ["Apache Software License", "MIT License", "Python Software Foundation License"]
         EOT
+    - name: Create pyproject.toml and fill it with the necessary config (>= python 3.8)
+      if: ${{ matrix.python-version == 3.8 || matrix.python-version == 3.9 }}
+      run: |
+        cat <<EOT >> pyproject.toml
+        [tool.pylic]
+        safe_licenses = ["Apache Software License", "MIT License"]
+        EOT
     - name: Test with Python ${{ matrix.python-version }}
       run: |
+        python --version
         python -m pylic
-        pylic
