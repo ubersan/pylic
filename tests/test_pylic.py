@@ -167,7 +167,7 @@ def test_correct_unnecessary_safe_licenses_found(mocker: MockerFixture, license:
     assert not no_unncessary_licenses
     assert print_mock.call_count == 2
     args, _ = print_mock.call_args_list[1]
-    assert args[0] == f"\t{license}3"
+    assert args[0] == f"  {license}3"
 
 
 def test_no_unncessary_packages_found_if_no_unsafe_nor_installed_packages_present(mocker: MockerFixture):
@@ -204,7 +204,7 @@ def test_correct_unnecessary_unsafe_packages_found(mocker: MockerFixture, packag
     assert not no_unncessary_packages
     assert print_mock.call_count == 2
     args, _ = print_mock.call_args_list[1]
-    assert args[0] == f"\t{package}3"
+    assert args[0] == f"  {package}3"
 
 
 def test_all_whitlisted_packages_valid_if_no_unsafe_packages_nor_any_packages_installed(mocker: MockerFixture):
@@ -282,11 +282,11 @@ def test_all_invalid_licenses_are_found(mocker: MockerFixture, package: str, lic
     assert not all_licenses_ok
     assert print_mock.call_count == 4
     args, _ = print_mock.call_args_list[1]
-    assert args[0] == f"\t{package}: {license}1"
+    assert args[0] == f"  {package}: {license}1"
     args, _ = print_mock.call_args_list[2]
-    assert args[0] == f"\t{package}: {license}3"
+    assert args[0] == f"  {package}: {license}3"
     args, _ = print_mock.call_args_list[3]
-    assert args[0] == f"\t{package}: {license}4"
+    assert args[0] == f"  {package}: {license}4"
 
 
 def test_main_prints_success_and_exits_with_return_value_0_in_good_case(
@@ -324,7 +324,7 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_bad_unsafe_packag
     args, _ = print_mock.call_args_list[0]
     assert args[0] == "Found unsafe packages with a known license. Instead allow these licenses explicitly:"
     args, _ = print_mock.call_args_list[1]
-    assert args[0] == f"\t{package}: {license}_not_unknown"
+    assert args[0] == f"  {package}: {license}_not_unknown"
 
 
 def test_main_prints_errors_and_exits_with_return_value_1_with_unsafe_licenses_are_installed(
@@ -346,7 +346,7 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_unsafe_licenses_a
     args, _ = print_mock.call_args_list[0]
     assert args[0] == "Found unsafe licenses:"
     args, _ = print_mock.call_args_list[1]
-    assert args[0] == f"\t{package}2: {license}2"
+    assert args[0] == f"  {package}2: {license}2"
 
 
 def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_unsafe_packages_listed(
@@ -364,7 +364,7 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_unsaf
     args, _ = print_mock.call_args_list[0]
     assert args[0] == "Unsafe packages listed which are not installed:"
     args, _ = print_mock.call_args_list[1]
-    assert args[0] == f"\t{package}"
+    assert args[0] == f"  {package}"
 
 
 def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_safe_licenses_listed(
@@ -382,4 +382,4 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_safe_
     args, _ = print_mock.call_args_list[0]
     assert args[0] == "Unncessary safe licenses listed which are not used any installed package:"
     args, _ = print_mock.call_args_list[1]
-    assert args[0] == f"\t{license}"
+    assert args[0] == f"  {license}"
