@@ -219,13 +219,26 @@ def test_unsafe_packages_invalid_if_corresponding_license_not_unknown(mocker: Mo
     packages_valied = check_unsafe_packages([package], [{"license": "not_unknown", "package": package}])
     assert not packages_valied
     assert print_mock.call_count == 2
+    args, _ = print_mock.call_args_list[0]
+    assert args[0] == "Found unsafe packages with a known license. Instead allow these licenses explicitly:"
 
 
-def test_unsafe_packages_ok_if_corresponding_licenses_are_unknown(mocker: MockerFixture, package: str):
+def test_unsafe_packages_valid_if_corresponding_licenses_are_unknown(mocker: MockerFixture, package: str):
     print_mock = mocker.patch("builtins.print")
-    packages_valied = check_unsafe_packages([package], [{"license": "unknown", "package": package}])
-    assert packages_valied
+    packages_valid = check_unsafe_packages([package], [{"license": "unknown", "package": package}])
+    assert packages_valid
     assert print_mock.call_count == 0
+
+
+def test_unsafe_packages_invalid_if_license_unknown_but_package_not_listed_as_unsafe(
+    mocker: MockerFixture, package: str
+):
+    print_mock = mocker.patch("builtins.print")
+    packages_valid = check_unsafe_packages([], [{"license": "unknown", "package": package}])
+    assert not packages_valid
+    assert print_mock.call_count == 2
+    args, _ = print_mock.call_args_list[0]
+    assert args[0] == "Found unsafe packages:"
 
 
 def test_all_licenses_ok_if_no_packages_installed_or_unsafe_and_no_liceses_safe():
