@@ -58,7 +58,7 @@ omit = ["setup.py", "pylic/__main__.py", "tests/*"]
 [tool.coverage.report]
 exclude_lines = [
     "if __name__ == .__main__.:",
-    "from importlib_metadata import Distribution, distributions  # type: ignore", # tested by integration tests
+    "from importlib_metadata import Distribution, distributions", # tested by integration tests
 ]
 
 [build-system]
