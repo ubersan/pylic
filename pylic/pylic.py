@@ -46,13 +46,17 @@ def read_all_installed_licenses_metadata() -> List[dict]:
 
     installed_licenses: List[dict] = []
     for distribution in installed_distributions:
-        package_name = distribution.metadata["Name"]
         license_string = read_license_from_classifier(distribution)
         if license_string == "unknown":
             license_string = read_license_from_metadata(distribution)
 
-        new_license = {"license": license_string, "package": package_name}
-        installed_licenses.append(new_license)
+        installed_licenses.append(
+            {
+                "license": license_string,
+                "package": distribution.metadata["Name"],
+                "version": distribution.metadata["Version"],
+            }
+        )
 
     return installed_licenses
 
@@ -97,50 +101,51 @@ def check_for_unnecessary_unsafe_packages(unsafe_packages: List[str], installed_
 
 def check_unsafe_packages(unsafe_packages: List[str], licenses: List[dict]) -> bool:
     bad_unsafe_packages: List[dict] = []
-    missing_unsafe_packages: List[str] = []
+    missing_unsafe_packages: List[dict] = []
 
     for license_info in licenses:
         license = license_info["license"]
         package = license_info["package"]
 
         if package in unsafe_packages and license.lower() != "unknown":
-            bad_unsafe_packages.append({"license": license, "package": package})
+            bad_unsafe_packages.append({"license": license, "package": package, "version": license_info["version"]})
         elif license.lower() == "unknown" and package not in unsafe_packages:
-            missing_unsafe_packages.append(package)
+            missing_unsafe_packages.append({"package": package, "version": license_info["version"]})
 
     success = True
     if len(bad_unsafe_packages) > 0:
         print("Found unsafe packages with a known license. Instead allow these licenses explicitly:")
         for bad_package in bad_unsafe_packages:
-            print(f"  {bad_package['package']}: {bad_package['license']}")
+            print(f"  {bad_package['package']} ({bad_package['version']}): {bad_package['license']}")
         success = False
 
     if len(missing_unsafe_packages) > 0:
         print("Found unsafe packages:")
         for missing_unsafe_package in missing_unsafe_packages:
-            print(f"  {missing_unsafe_package}")
+            print(f"  {missing_unsafe_package['package']} ({missing_unsafe_package['version']})")
         success = False
 
     return success
 
 
-def check_licenses(safe_licenses: List[str], unsafe_packages: List[str], installed_licenses: List[dict]) -> bool:
+def check_licenses(safe_licenses: List[str], installed_licenses: List[dict]) -> bool:
     bad_licenses: List[dict] = []
     lower_safe_licenses = [safe_license.lower() for safe_license in safe_licenses]
 
     for license_info in installed_licenses:
         license = license_info["license"]
-        package = license_info["package"]
 
         if license.lower() == "unknown" or license.lower() in lower_safe_licenses:
             continue
 
-        bad_licenses.append({"license": license, "package": package})
+        bad_licenses.append(
+            {"license": license, "package": license_info["package"], "version": license_info["version"]}
+        )
 
     if len(bad_licenses) > 0:
         print("Found unsafe licenses:")
         for bad_license in bad_licenses:
-            print(f"  {bad_license['package']}: {bad_license['license']}")
+            print(f"  {bad_license['package']} ({bad_license['version']}): {bad_license['license']}")
         return False
 
     return True
@@ -152,7 +157,7 @@ def main():
     no_unnecessary_safe_licenses = check_for_unnecessary_safe_licenses(safe_licenses, installed_licenses)
     no_unncessary_unsafe_packages = check_for_unnecessary_unsafe_packages(unsafe_packages, installed_licenses)
     packages_ok = check_unsafe_packages(unsafe_packages, installed_licenses)
-    licenses_ok = check_licenses(safe_licenses, unsafe_packages, installed_licenses)
+    licenses_ok = check_licenses(safe_licenses, installed_licenses)
 
     if all([no_unnecessary_safe_licenses, no_unncessary_unsafe_packages, packages_ok, licenses_ok]):
         print("All licenses ok")
