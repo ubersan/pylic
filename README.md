@@ -58,15 +58,15 @@ The output will be similar to
 
 ```sh
 Found unsafe packages:
-  pkg_resources
+  pkg_resources (0.0.0)
 Found unsafe licenses:
-  pip: MIT License
-  zipp: MIT License
-  toml: MIT License
-  setuptools: MIT License
-  importlib-metadata: Apache Software License
-  typing-extensions: Python Software Foundation License
-  pylic: MIT License
+  pip (18.1): MIT License
+  zipp (3.4.1): MIT License
+  toml (0.10.2): MIT License
+  pylic (1.2.0): MIT License
+  setuptools (40.8.0): MIT License
+  typing-extensions (3.7.4.3): Python Software Foundation License
+  importlib-metadata (3.9.0): Apache Software License
 ```
 
 The return code of `pylic` is in this case non-zero
