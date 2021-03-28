@@ -6,7 +6,7 @@ import toml
 if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
     from importlib.metadata import Distribution, distributions
 else:
-    from importlib_metadata import Distribution, distributions  # type: ignore
+    from importlib_metadata import Distribution, distributions
 
 
 def read_pyproject_file(filepath: str = "pyproject.toml") -> Tuple[List[str], List[str]]:
@@ -32,7 +32,7 @@ def read_license_from_classifier(distribution: Distribution) -> str:
         if key == "Classifier":
             parts = [part.strip() for part in content.split("::")]
             if parts[0] == "License":
-                return parts[-1]
+                return parts[-1]  # type: ignore[no-any-return]
 
     return "unknown"
 
@@ -151,7 +151,7 @@ def check_licenses(safe_licenses: List[str], installed_licenses: List[dict]) -> 
     return True
 
 
-def main():
+def main() -> None:
     safe_licenses, unsafe_packages = read_pyproject_file()
     installed_licenses = read_all_installed_licenses_metadata()
     no_unnecessary_safe_licenses = check_for_unnecessary_safe_licenses(safe_licenses, installed_licenses)
