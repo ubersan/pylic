@@ -41,7 +41,7 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-Activate the venv and install `pylic` and create an empty `pyproject.toml`
+Install `pylic` and create an empty `pyproject.toml`
 
 ```sh
 pip install pylic
