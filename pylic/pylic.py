@@ -37,8 +37,8 @@ def read_license_from_classifier(distribution: Distribution) -> str:
     return "unknown"
 
 
-def read_license_from_metadata(distribution: Distribution) -> str:
-    return distribution.metadata.get("License", "unknown")
+def read_license_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
+    return distribution.metadata.get("License", fallback)
 
 
 def read_all_installed_licenses_metadata() -> List[dict]:
@@ -49,6 +49,8 @@ def read_all_installed_licenses_metadata() -> List[dict]:
         license_string = read_license_from_classifier(distribution)
         if license_string == "unknown":
             license_string = read_license_from_metadata(distribution)
+        if license_string == "OSI Approved":
+            license_string = read_license_from_metadata(distribution, fallback="OSI Approved")
 
         installed_licenses.append(
             {
