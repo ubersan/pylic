@@ -1,10 +1,12 @@
 # pylic - Python license checker [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/sandrochuber/pylic/blob/main/LICENSE) [![PyPI version](https://badge.fury.io/py/pylic.svg)](https://badge.fury.io/py/pylic/) [![Codecov](https://codecov.io/gh/sandrochuber/pylic//branch/main/graph/badge.svg)](https://codecov.io/gh/sandrochuber/pylic/)
 
-Reads the pyproject.toml file and checks all installed licenses recursively.
+Reads pylic configuration in `pyproject.toml` and checks licenses of installed packages recursively.
 
 Principles:
 - Every license has to be allowed explicitly (case-insensitive comparison).
-- All packages without license are considered unsafe and have to be listed as such.
+- All installed packages without a license are considered unsafe and have to be listed as such.
+
+> Only installed packages are checked for licenses. Packages/dependencies listed in `pyproject.toml` are ignored.
 
 ## Installation
 
@@ -48,6 +50,12 @@ pip install pylic
 touch pyproject.toml
 ```
 
+Install all your dependencies
+
+```sh
+pip install <packageA> <packageB>
+```
+
 Run pylic
 
 ```sh
@@ -69,7 +77,7 @@ Found unsafe licenses:
   importlib-metadata (3.9.0): Apache Software License
 ```
 
-The return code of `pylic` is in this case non-zero
+The return code of `pylic` is in this case non-zero due to unsafe licenses. This allows usage of pylic in CI.
 
 ```sh
 echo $? # prints 1
