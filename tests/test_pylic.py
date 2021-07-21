@@ -443,7 +443,7 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_unsaf
     assert args[0] == f"  {package}"
 
 
-def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_safe_licenses_listed(
+def test_main_prints_errors_and_exits_with_return_value_0_with_unnecessary_safe_licenses_listed(
     mocker: MockerFixture, license: str
 ) -> None:
     mock_read_pyproject_file = mocker.patch("pylic.pylic.read_pyproject_file")
@@ -451,11 +451,9 @@ def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_safe_
     mock_read_installed_licenses = mocker.patch("pylic.pylic.read_all_installed_licenses_metadata")
     mock_read_installed_licenses.return_value = []
     print_mock = mocker.patch("builtins.print")
-    sys_exit_mock = mocker.patch("sys.exit")
     main()
-    sys_exit_mock.assert_called_once()
-    assert print_mock.call_count == 2
+    assert print_mock.call_count == 3
     args, _ = print_mock.call_args_list[0]
-    assert args[0] == "Unncessary safe licenses listed which are not used any installed package:"
+    assert args[0] == "Safe licenses listed which are not used by any installed package:"
     args, _ = print_mock.call_args_list[1]
     assert args[0] == f"  {license}"
