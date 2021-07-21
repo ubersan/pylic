@@ -74,10 +74,9 @@ def check_for_unnecessary_safe_licenses(safe_licenses: List[str], installed_lice
             unnecessary_safe_licenses.append(safe_licenses[index])
 
     if len(unnecessary_safe_licenses) > 0:
-        print("Unncessary safe licenses listed which are not used any installed package:")
+        print("Safe licenses listed which are not used by any installed package:")
         for unnecessary_safe_license in unnecessary_safe_licenses:
             print(f"  {unnecessary_safe_license}")
-        return False
 
     return True
 
