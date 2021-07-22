@@ -22,6 +22,7 @@ pytest = "^6.2.2"
 pytest-cov = "^2.11.1"
 pytest-mock = "^3.5.1"
 isort = "^5.7.0"
+types-toml = "^0.1.3"
 
 [tool.taskipy.tasks]
 release = "scripts/create_new_release.sh"
