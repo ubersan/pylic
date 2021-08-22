@@ -1,6 +1,7 @@
 {
     "python.venvPath": "${env:VIRTUAL_ENV}",
     "python.pythonPath": "${env:VIRTUAL_ENV}/bin/python",
+    "python.defaultInterpreterPath": "${env:VIRTUAL_ENV}/bin/python",
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.formatting.provider": "black",
