@@ -1,5 +1,5 @@
 import sys
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import toml
 
@@ -9,7 +9,7 @@ else:
     from importlib_metadata import Distribution, distributions
 
 
-def read_pyproject_file(filepath: str = "pyproject.toml") -> Tuple[List[str], List[str]]:
+def read_pyproject_file(filepath: str = "pyproject.toml") -> Tuple[List[Dict[str, str]], List[Dict[str, str]]]:
     with open(filepath, "r") as pyproject_file:
         try:
             project_config = toml.load(pyproject_file)
@@ -17,12 +17,16 @@ def read_pyproject_file(filepath: str = "pyproject.toml") -> Tuple[List[str], Li
             raise exception
 
     pylic_config = project_config.get("tool", {}).get("pylic", {})
-    safe_licenses: List[str] = pylic_config.get("safe_licenses", [])
+    safe_licenses: List[Dict[str, str]] = [
+        {"name": license, "hash": license.lower()} for license in pylic_config.get("safe_licenses", [])
+    ]
 
-    if "unknown" in [safe_license.lower() for safe_license in safe_licenses]:
+    if "unknown" in [safe_license["hash"] for safe_license in safe_licenses]:
         raise ValueError("'unknown' can't be an safe license. Whitelist the corresponding packages instead.")
 
-    unsafe_packages: List[str] = pylic_config.get("unsafe_packages", [])
+    unsafe_packages: List[Dict[str, str]] = [
+        {"name": package, "hash": package.lower()} for package in pylic_config.get("unsafe_packages", [])
+    ]
 
     return (safe_licenses, unsafe_packages)
 
@@ -53,7 +57,9 @@ def read_all_installed_licenses_metadata() -> List[dict]:
         installed_licenses.append(
             {
                 "license": license_string,
+                "license_hash": license_string.lower(),
                 "package": distribution.metadata["Name"],
+                "package_hash": distribution.metadata["Name"].lower(),
                 "version": distribution.metadata["Version"],
             }
         )
