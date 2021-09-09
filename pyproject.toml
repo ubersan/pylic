@@ -25,10 +25,9 @@ isort = "^5.9.3"
 types-toml = "^0.1.5"
 
 [tool.taskipy.tasks]
-release = "scripts/create_new_release.sh"
-publish_docker = "scripts/publish_new_docker.sh"
-test = "pytest --cov=./ --cov-report=xml"
 quality = "black . && flake8 --count . && isort . && mypy ."
+test = "pytest --cov=./ --cov-report=xml"
+release = "scripts/create_new_release.sh"
 
 [tool.pylic]
 safe_licenses = [
