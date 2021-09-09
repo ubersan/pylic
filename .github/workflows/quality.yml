@@ -20,14 +20,13 @@ jobs:
         path: ~/.cache/pypoetry/virtualenvs
         key: poetry-${{ hashFiles('poetry.lock') }}
     - name: Install dependencies
-      run: poetry install --no-root
+      run: poetry install
     - name: Lint, format, sort imports & typecheck
       run: |
         poetry run task quality
     - name: Run tests & generate coverage report
       run: |
-        pip install pytest pytest_mock pytest-cov
-        pytest --cov=./ --cov-report=xml
+        poetry run task test
     - name: Upload code coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
