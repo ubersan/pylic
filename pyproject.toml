@@ -27,6 +27,7 @@ types-toml = "^0.1.5"
 [tool.taskipy.tasks]
 quality = "black . && flake8 --count . && isort . && mypy ."
 test = "pytest --cov=./ --cov-report=xml"
+check_licenses = "python -m pylic"
 release = "scripts/create_new_release.sh"
 
 [tool.pylic]
