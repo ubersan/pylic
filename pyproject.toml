@@ -27,6 +27,7 @@ types-toml = "^0.1.5"
 [tool.taskipy.tasks]
 quality = "black . && flake8 --count . && isort . && mypy ."
 test = "pytest --cov=./ --cov-report=xml"
+check_licenses = "python -m pylic"
 release = "scripts/create_new_release.sh"
 
 [tool.pylic]
@@ -34,11 +35,9 @@ safe_licenses = [
     "Public Domain",
     "BSD License",
     "Apache Software License",
-    "Apache License 2.0",
     "MIT License",
     "Python Software Foundation License",
-    "Mozilla Public License 2.0 (MPL 2.0)",
-    "GNU Library or Lesser General Public License (LGPL)",
+    "Mozilla Public License 2.0 (MPL 2.0)"
 ]
 
 [tool.black]
