@@ -35,11 +35,9 @@ safe_licenses = [
     "Public Domain",
     "BSD License",
     "Apache Software License",
-    "Apache License 2.0",
     "MIT License",
     "Python Software Foundation License",
-    "Mozilla Public License 2.0 (MPL 2.0)",
-    "GNU Library or Lesser General Public License (LGPL)",
+    "Mozilla Public License 2.0 (MPL 2.0)"
 ]
 
 [tool.black]
