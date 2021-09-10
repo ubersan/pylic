@@ -1,30 +1,12 @@
 import sys
-from typing import List, Tuple
+from typing import List
 
-import toml
+from pylic.toml import read_config
 
 if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
     from importlib.metadata import Distribution, distributions
 else:
     from importlib_metadata import Distribution, distributions
-
-
-def read_pyproject_file(filepath: str = "pyproject.toml") -> Tuple[List[str], List[str]]:
-    with open(filepath, "r") as pyproject_file:
-        try:
-            project_config = toml.load(pyproject_file)
-        except Exception as exception:
-            raise exception
-
-    pylic_config = project_config.get("tool", {}).get("pylic", {})
-    safe_licenses: List[str] = pylic_config.get("safe_licenses", [])
-
-    if "unknown" in [safe_license.lower() for safe_license in safe_licenses]:
-        raise ValueError("'unknown' can't be an safe license. Whitelist the corresponding packages instead.")
-
-    unsafe_packages: List[str] = pylic_config.get("unsafe_packages", [])
-
-    return (safe_licenses, unsafe_packages)
 
 
 def read_license_from_classifier(distribution: Distribution) -> str:
@@ -154,7 +136,7 @@ def check_licenses(safe_licenses: List[str], installed_licenses: List[dict]) -> 
 
 
 def main() -> None:
-    safe_licenses, unsafe_packages = read_pyproject_file()
+    safe_licenses, unsafe_packages = read_config()
     installed_licenses = read_all_installed_licenses_metadata()
     no_unnecessary_safe_licenses = check_for_unnecessary_safe_licenses(safe_licenses, installed_licenses)
     no_unncessary_unsafe_packages = check_for_unnecessary_unsafe_packages(unsafe_packages, installed_licenses)
@@ -165,7 +147,3 @@ def main() -> None:
         print("All licenses ok")
     else:
         sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()

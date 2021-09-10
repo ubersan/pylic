@@ -1,3 +1,3 @@
-from .pylic import main
+from pylic.cli.app import main
 
 main()
