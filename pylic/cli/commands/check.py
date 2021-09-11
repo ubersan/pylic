@@ -30,7 +30,7 @@ class CheckCommand(Command):
             ]
         ):
             if len(unnecessary_safe_licenses) > 0:
-                self.line_error("Unncessary safe licenses listed which are not used any installed package:")
+                self.line_error("Unnecessary safe licenses listed which are not used by any installed package:")
                 for unnecessary_safe_license in unnecessary_safe_licenses:
                     self.line_error(f"  {unnecessary_safe_license}")
 
