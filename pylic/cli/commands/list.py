@@ -3,7 +3,7 @@ from cleo import Command
 from pylic.licenses import read_all_installed_licenses_metadata
 
 
-class ListCommand(Command):  # type:ignore
+class ListCommand(Command):
     name = "list"
     description = "Lists all installed packages and their corresponding license."
 
@@ -15,6 +15,5 @@ class ListCommand(Command):  # type:ignore
             for installed in installed_licenses
         }
 
-        print("Installed Packages:")
         for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
-            print(f"  {package}({rest['version']}): {rest['license']}")
+            self.line(f"{package} ({rest['version']}): {rest['license']}")
