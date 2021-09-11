@@ -31,3 +31,8 @@ def _read_pyproject_file(filename: str) -> MutableMapping[str, Any]:
 
 
 version = read_version()
+
+
+# TODOS for next time:
+# 1. list & dict -> typign List & Dict, because of 3.6 <= version < 3.9. only possible in 3.9
+# 2. get pylic version from installed package not from pyproject file lol dummy
