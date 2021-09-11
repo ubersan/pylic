@@ -1,6 +1,6 @@
 from cleo import Command
 
-from pylic.pylic import read_all_installed_licenses_metadata
+from pylic.licenses import read_all_installed_licenses_metadata
 
 
 class ListCommand(Command):  # type:ignore
