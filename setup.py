@@ -20,7 +20,7 @@ setuptools.setup(
     long_description=readme_content,
     long_description_content_type="text/markdown",
     python_requires=">=3.6",
-    install_requires=["toml", "importlib-metadata"],
+    install_requires=["toml", "importlib-metadata", "cleo"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
