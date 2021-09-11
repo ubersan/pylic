@@ -1,5 +1,5 @@
 import sys
-from typing import List
+from typing import Dict, List, cast
 
 if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
     from importlib.metadata import Distribution, distributions
@@ -7,10 +7,16 @@ else:
     from importlib_metadata import Distribution, distributions
 
 
-def read_all_installed_licenses_metadata() -> List[dict]:
+def read_version() -> str:
+    installed_licenses = read_all_installed_licenses_metadata()
+    pylic = next(filter(lambda metadata: metadata["package"] == "pylic", installed_licenses))
+    return cast(str, pylic["version"])
+
+
+def read_all_installed_licenses_metadata() -> List[Dict]:
     installed_distributions = distributions()
 
-    installed_licenses: List[dict] = []
+    installed_licenses: List[Dict] = []
     for distribution in installed_distributions:
         license_string = _read_license_from_classifier(distribution)
         if license_string == "unknown":
@@ -41,3 +47,6 @@ def _read_license_from_classifier(distribution: Distribution) -> str:
 
 def _read_license_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
     return distribution.metadata.get("License", fallback)
+
+
+version = read_version()

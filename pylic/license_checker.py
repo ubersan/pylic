@@ -1,18 +1,18 @@
-from typing import Optional
+from typing import Dict, List, Optional
 
 
 class LicenseChecker:
     def __init__(
         self,
-        safe_licenses: Optional[list[str]] = None,
-        unsafe_packages: Optional[list[str]] = None,
-        installed_licenses: Optional[list[dict]] = None,
+        safe_licenses: Optional[List[str]] = None,
+        unsafe_packages: Optional[List[str]] = None,
+        installed_licenses: Optional[List[Dict]] = None,
     ) -> None:
         self.safe_licenses = safe_licenses or []
         self.unsafe_packages = unsafe_packages or []
         self.installed_licenses = installed_licenses or []
 
-    def get_unnecessary_safe_licenses(self) -> list[str]:
+    def get_unnecessary_safe_licenses(self) -> List[str]:
         installed_license_names = [license_info["license"].lower() for license_info in self.installed_licenses]
 
         unnecessary_safe_licenses = []
@@ -24,7 +24,7 @@ class LicenseChecker:
 
         return unnecessary_safe_licenses
 
-    def get_unnecessary_unsafe_packages(self) -> list[str]:
+    def get_unnecessary_unsafe_packages(self) -> List[str]:
         installed_package_names = [license_info["package"].lower() for license_info in self.installed_licenses]
 
         unnecessary_unsafe_packages = []
@@ -36,8 +36,8 @@ class LicenseChecker:
 
         return unnecessary_unsafe_packages
 
-    def get_bad_unsafe_packages(self) -> list[dict]:
-        bad_unsafe_packages: list[dict] = []
+    def get_bad_unsafe_packages(self) -> List[Dict]:
+        bad_unsafe_packages: List[Dict] = []
 
         for license_info in self.installed_licenses:
             license = license_info["license"]
@@ -48,8 +48,8 @@ class LicenseChecker:
 
         return bad_unsafe_packages
 
-    def get_missing_unsafe_packages(self) -> list[dict]:
-        missing_unsafe_packages: list[dict] = []
+    def get_missing_unsafe_packages(self) -> List[Dict]:
+        missing_unsafe_packages: List[Dict] = []
 
         for license_info in self.installed_licenses:
             license = license_info["license"]
@@ -60,8 +60,8 @@ class LicenseChecker:
 
         return missing_unsafe_packages
 
-    def get_unsafe_licenses(self) -> list[dict]:
-        unsafe_licenses: list[dict] = []
+    def get_unsafe_licenses(self) -> List[Dict]:
+        unsafe_licenses: List[Dict] = []
         lower_safe_licenses = [safe_license.lower() for safe_license in self.safe_licenses]
 
         for license_info in self.installed_licenses:

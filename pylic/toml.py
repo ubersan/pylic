@@ -1,4 +1,4 @@
-from typing import Any, List, MutableMapping, Tuple, cast
+from typing import Any, List, MutableMapping, Tuple
 
 import toml
 
@@ -16,23 +16,9 @@ def read_config(filename: str = "pyproject.toml") -> Tuple[List[str], List[str]]
     return (safe_licenses, unsafe_packages)
 
 
-def read_version(filename: str = "pyproject.toml") -> str:
-    project_config = _read_pyproject_file(filename)
-    poetry_config = project_config.get("tool", {}).get("poetry", {})
-    return cast(str, poetry_config["version"])
-
-
 def _read_pyproject_file(filename: str) -> MutableMapping[str, Any]:
     with open(filename, "r") as pyproject_file:
         try:
             return toml.load(pyproject_file)
         except Exception as exception:
             raise exception
-
-
-version = read_version()
-
-
-# TODOS for next time:
-# 1. list & dict -> typign List & Dict, because of 3.6 <= version < 3.9. only possible in 3.9
-# 2. get pylic version from installed package not from pyproject file lol dummy

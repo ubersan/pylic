@@ -2,7 +2,7 @@ from cleo import Application
 
 from pylic.cli.commands.check import CheckCommand
 from pylic.cli.commands.list import ListCommand
-from pylic.toml import version
+from pylic.licenses import version
 
 app = Application("pylic", version, complete=True)
 app.add(ListCommand())
