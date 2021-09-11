@@ -3,16 +3,8 @@ from typing import Any, List, MutableMapping, Tuple, cast
 import toml
 
 
-def read_pyproject_file() -> MutableMapping[str, Any]:
-    with open("pyproject.toml", "r") as pyproject_file:
-        try:
-            return toml.load(pyproject_file)
-        except Exception as exception:
-            raise exception
-
-
-def read_config() -> Tuple[List[str], List[str]]:
-    project_config = read_pyproject_file()
+def read_config(filename: str = "pyproject.toml") -> Tuple[List[str], List[str]]:
+    project_config = _read_pyproject_file(filename)
     pylic_config = project_config.get("tool", {}).get("pylic", {})
     safe_licenses: List[str] = pylic_config.get("safe_licenses", [])
 
@@ -24,10 +16,18 @@ def read_config() -> Tuple[List[str], List[str]]:
     return (safe_licenses, unsafe_packages)
 
 
-def read_version() -> str:
-    project_config = read_pyproject_file()
+def read_version(filename: str = "pyproject.toml") -> str:
+    project_config = _read_pyproject_file(filename)
     poetry_config = project_config.get("tool", {}).get("poetry", {})
     return cast(str, poetry_config["version"])
+
+
+def _read_pyproject_file(filename: str) -> MutableMapping[str, Any]:
+    with open(filename, "r") as pyproject_file:
+        try:
+            return toml.load(pyproject_file)
+        except Exception as exception:
+            raise exception
 
 
 version = read_version()
