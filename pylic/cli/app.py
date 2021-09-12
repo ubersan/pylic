@@ -1,8 +1,8 @@
 from cleo import Application
 
+from pylic.__version__ import version
 from pylic.cli.commands.check import CheckCommand
 from pylic.cli.commands.list import ListCommand
-from pylic.licenses import version
 
 app = Application("pylic", version, complete=True)
 app.add(ListCommand())

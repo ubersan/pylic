@@ -114,5 +114,5 @@ Required tools:
 Run `poetry install` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utily tasks. You can run these with `poetry run task <task>`.
 
 Creating a new release is as simple as:
-- Update `version` in the pyproject.toml file.
+- Update `version` in the pyproject.toml and the `__version__.py` file.
 - `poetry run task release vx.x.x`.

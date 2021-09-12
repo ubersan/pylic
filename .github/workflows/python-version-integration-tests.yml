@@ -38,4 +38,4 @@ jobs:
         EOT
     - name: Test with Python ${{ matrix.python-version }}
       run: |
-        python -m pylic
+        python -m pylic check
