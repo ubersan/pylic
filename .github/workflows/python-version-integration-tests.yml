@@ -18,8 +18,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        sudo apt-get update && sudo apt-get install -y python3-setuptools
         python -m pip install --upgrade pip
-        python -m pip install toml importlib-metadata cleo
         python -m pip install -e .
     - name: Remove pylics own pyproject.toml
       run: rm pyproject.toml
