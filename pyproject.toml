@@ -6,7 +6,7 @@ authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 license = "MIT License"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.6.2"
 toml = "^0.10.2"
 importlib-metadata = "^4.6.4"
 cleo = "^0.8.1"
