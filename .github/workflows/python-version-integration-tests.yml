@@ -27,14 +27,14 @@ jobs:
       run: |
         cat <<EOT >> pyproject.toml
         [tool.pylic]
-        safe_licenses = ["Apache Software License", "MIT License", "Python Software Foundation License"]
+        safe_licenses = ["Apache Software License", "MIT License", "Python Software Foundation License", "BSD License"]
         EOT
     - name: Create pyproject.toml and fill it with the necessary config (>= python 3.8)
       if: ${{ matrix.python-version == 3.8 || matrix.python-version == 3.9 }}
       run: |
         cat <<EOT >> pyproject.toml
         [tool.pylic]
-        safe_licenses = ["Apache Software License", "MIT License"]
+        safe_licenses = ["Apache Software License", "MIT License", "BSD License"]
         EOT
     - name: Test with Python ${{ matrix.python-version }}
       run: |
