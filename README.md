@@ -34,6 +34,12 @@ unsafe_packages = [
 ]
 ```
 
+## Commands
+
+`pylic` provides the following commands (also see `pylic help`):
+- `check`: Checks all installed licenses.
+- `list`: Lists all installed packages and their corresponding license.
+
 ## Usage Example
 
 Create a venv to start with a clean ground and activate it
@@ -59,7 +65,7 @@ pip install <packageA> <packageB>
 Run pylic
 
 ```sh
-pylic
+pylic check
 ```
 
 The output will be similar to
@@ -93,7 +99,7 @@ unsafe_packages = ["pkg_resources"]
 EOT
 ```
 
-The output now reveals a successful validation
+After rerunning `pylic check` the output now reveals a successful validation
 
 ```sh
 All licenses ok
@@ -104,6 +110,8 @@ Also the return code now signals that all is good
 ```sh
 echo $? # prints 0
 ```
+
+Use `pylic list` to list all installed packages and their corresponding licenses.
 
 ## Development
 
