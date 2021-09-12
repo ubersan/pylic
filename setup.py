@@ -14,7 +14,7 @@ setuptools.setup(
     description="A Python license checker",
     author="Sandro Huber",
     author_email="sandrochuber@gmail.com",
-    url="https://github.com/sandrochuber/pylic",
+    url="https://github.com/ubersan/pylic",
     packages=["pylic"],
     license="MIT",
     long_description=readme_content,
