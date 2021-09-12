@@ -31,5 +31,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Development Status :: 3 - Alpha",
     ],
-    entry_points={"console_scripts": ["pylic=pylic.cli:app"]},
+    entry_points={"console_scripts": ["pylic=pylic.cli.app:main"]},
 )
