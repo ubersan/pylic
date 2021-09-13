@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "2.0.7"
+version = "2.0.8"
 description = "A Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 keywords = ["cli", "license"]
@@ -8,6 +8,7 @@ license = "MIT License"
 readme = "README.md"
 homepage = "https://github.com/ubersan/pylic"
 repository = "https://github.com/ubersan/pylic"
+classifiers = ["Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
@@ -58,9 +59,6 @@ force_grid_wrap = 0
 use_parentheses = "True"
 ensure_newline_before_comments = "True"
 line_length = 120
-
-[tool.coverage.run]
-omit = ["setup.py", "pylic/__main__.py", "tests/*"]
 
 [tool.coverage.report]
 exclude_lines = [
