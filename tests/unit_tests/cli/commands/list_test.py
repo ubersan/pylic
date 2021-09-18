@@ -5,7 +5,7 @@ from cleo import Application, CommandTester
 from pytest_mock import MockerFixture
 
 from pylic.cli.commands.list import ListCommand
-from tests.conftest import random_string
+from tests.unit_tests.conftest import random_string
 
 
 @pytest.fixture

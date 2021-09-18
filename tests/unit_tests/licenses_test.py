@@ -8,7 +8,7 @@ from pylic.licenses import (
     _read_license_from_metadata,
     read_all_installed_licenses_metadata,
 )
-from tests.conftest import random_string
+from tests.unit_tests.conftest import random_string
 
 
 @pytest.fixture
