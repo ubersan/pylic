@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "2.0.8"
+version = "2.0.9"
 description = "A Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 keywords = ["cli", "license"]
@@ -36,7 +36,7 @@ pylic = 'pylic.cli.app:main'
 [tool.taskipy.tasks]
 quality = "black . && flake8 --count . && isort . && mypy ."
 test = "pytest --cov=./ --cov-report=xml"
-check_licenses = "python -m pylic"
+check_licenses = "python -m pylic check"
 release = "scripts/create_new_release.sh"
 
 [tool.pylic]
@@ -90,7 +90,7 @@ show_error_codes = true
 pretty = true
 
 [[tool.mypy.overrides]]
-module = ["cleo"]
+module = ["cleo.*"]
 ignore_missing_imports = true
 
 [build-system]
