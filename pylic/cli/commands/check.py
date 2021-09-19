@@ -7,7 +7,7 @@ from pylic.toml import read_config
 
 class CheckCommand(Command):
     name = "check"
-    description = "Checks all installed licenses."
+    description = "Checks all installed licenses"
 
     def handle(self) -> int:
         safe_licenses, unsafe_packages = read_config()

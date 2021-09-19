@@ -5,7 +5,7 @@ from pylic.licenses import read_all_installed_licenses_metadata
 
 class ListCommand(Command):
     name = "list"
-    description = "Lists all installed packages and their corresponding license."
+    description = "Lists all installed packages and their corresponding license"
 
     def handle(self) -> None:
         installed_licenses = read_all_installed_licenses_metadata()
