@@ -36,7 +36,7 @@ pylic = 'pylic.cli.app:main'
 [tool.taskipy.tasks]
 quality = "black . && flake8 --count . && isort . && mypy ."
 test = "pytest --cov=./ --cov-report=xml"
-check_licenses = "python -m pylic"
+check_licenses = "python -m pylic check"
 release = "scripts/create_new_release.sh"
 
 [tool.pylic]
