@@ -28,7 +28,7 @@ def test_app_shows_correct_help_message(test_app: ApplicationTester) -> None:
     assert return_code == 1
     help_output = test_app.io.fetch_output()
     assert help_output == (
-        """Pylic version 2.0.9
+        """Pylic version 2.0.10
 
 USAGE
   pylic <command>
