@@ -39,7 +39,6 @@ release = " git tag $(task get_current_version) && git push origin $(task get_cu
 
 [tool.pylic]
 safe_licenses = [
-    "Public Domain",
     "BSD License",
     "Apache Software License",
     "MIT License",
