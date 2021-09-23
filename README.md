@@ -117,7 +117,6 @@ Use `pylic list` to list all installed packages and their corresponding licenses
 
 Required tools:
 - Poetry (https://python-poetry.org/)
-- GitHub cli (https://github.com/cli/cli)
 
 Run `poetry install` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utily tasks. You can run these with `poetry run task <task>`.
 
