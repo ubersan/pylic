@@ -1,6 +1,5 @@
 [tool.pylic]
 safe_licenses = [
-    "Public Domain",
     "BSD License",
     "Apache Software License",
     "MIT License",

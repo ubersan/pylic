@@ -123,4 +123,4 @@ Run `poetry install` to install all necessary dependencies. Checkout the `[tool.
 
 Creating a new release is as simple as:
 - Update `version` in the pyproject.toml and the `__version__.py` file.
-- `poetry run task release vx.x.x`.
+- `poetry run task release`.

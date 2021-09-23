@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "2.0.9"
+version = "2.0.10"
 description = "A Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 keywords = ["cli", "license"]
@@ -20,9 +20,6 @@ cleo = "^0.8.1"
 black = {version = "^21.8b0", python = "^3.6.2"}
 flake8 = "^3.9.2"
 mypy = "^0.910"
-setuptools = "^57.4.0"
-wheel = "^0.37.0"
-twine = "^3.4.2"
 taskipy = "^1.8.1"
 pytest = "^6.2.4"
 pytest-cov = "^2.12.1"
@@ -37,11 +34,11 @@ pylic = 'pylic.cli.app:main'
 quality = "black . && flake8 --count . && isort . && mypy ."
 test = "pytest --cov=./ --cov-report=xml"
 check_licenses = "python -m pylic check"
-release = "scripts/create_new_release.sh"
+get_current_version = "echo -n v$(sed '3q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"
+release = " git tag $(task get_current_version) && git push origin $(task get_current_version)"
 
 [tool.pylic]
 safe_licenses = [
-    "Public Domain",
     "BSD License",
     "Apache Software License",
     "MIT License",
