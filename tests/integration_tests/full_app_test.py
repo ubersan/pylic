@@ -58,7 +58,3 @@ def test_correct_error_is_returned_when_bad_unsafe_package(mocker: MockerFixture
     )
     assert test_app.io.fetch_output() == ""
     assert return_code == 1
-
-
-# todo:
-# # def test_main_prints_errors_and_exits_with_return_value_1_with_unnecessary_unsafe_packages_listed(
