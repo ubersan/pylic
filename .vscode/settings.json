@@ -4,6 +4,9 @@
     "python.defaultInterpreterPath": "${env:VIRTUAL_ENV}/bin/python",
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "max-line-length=120"
+    ],
     "python.formatting.provider": "black",
     "[python]": {
         "editor.formatOnSave": true,

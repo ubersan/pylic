@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylic"
-version = "2.1.0"
+version = "2.2.0"
 description = "A Python license checker"
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
 keywords = ["cli", "license"]
@@ -31,7 +31,7 @@ types-toml = "^0.10.1"
 pylic = 'pylic.cli.app:main'
 
 [tool.taskipy.tasks]
-quality = "black . && flake8 --count . && isort . && mypy ."
+quality = "black . && flake8 --max-line-length 120 --count . && isort . && mypy ."
 test = "pytest --cov=./ --cov-report=xml"
 check_licenses = "python -m pylic check"
 get_current_version = "echo -n v$(sed '3q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"
@@ -87,7 +87,7 @@ show_error_codes = true
 pretty = true
 
 [[tool.mypy.overrides]]
-module = ["cleo.*"]
+module = ["cleo.*", "clikit.*"]
 ignore_missing_imports = true
 
 [build-system]
