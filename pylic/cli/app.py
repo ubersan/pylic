@@ -1,5 +1,6 @@
 from cleo import Application
 from cleo.config import ApplicationConfig
+from clikit.api.args.format.option import Option
 
 from pylic.__version__ import version
 from pylic.cli.commands.check import CheckCommand
@@ -14,7 +15,10 @@ class AppConfig(ApplicationConfig):
         self.set_io_factory(self.create_io)
 
 
-app = Application("pylic", version, complete=True, config=AppConfig())
+config = AppConfig()
+config.add_option("help", "h", Option.NO_VALUE, "Displays this help message")
+
+app = Application("pylic", version, complete=True, config=config)
 app.add(CheckCommand())
 app.add(HelpCommand().default())
 app.add(ListCommand())
