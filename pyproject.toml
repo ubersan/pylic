@@ -14,7 +14,6 @@ classifiers = ["Development Status :: 3 - Alpha"]
 python = "^3.6"
 toml = "^0.10.2"
 importlib-metadata = "^4.8.1"
-cleo = "^0.8.1"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^21.8b0", python = "^3.6.2"}
