@@ -14,9 +14,7 @@ def check() -> CommandTester:
     return CommandTester(check_command)
 
 
-def test_check_is_valid_if_no_packages_are_installed_and_config_is_empty(
-    mocker: MockerFixture, check: CommandTester
-) -> None:
+def test_check_is_valid_if_no_packages_are_installed_and_config_is_empty(mocker: MockerFixture, check: CommandTester) -> None:
     mocker.patch("pylic.cli.commands.check.read_config", return_value=([], []))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=[])
     return_code = check.execute()
@@ -25,9 +23,7 @@ def test_check_is_valid_if_no_packages_are_installed_and_config_is_empty(
     assert check.io.fetch_error() == ""
 
 
-def test_check_yields_correct_unnecessary_safe_licenses(
-    mocker: MockerFixture, check: CommandTester, license: str
-) -> None:
+def test_check_yields_correct_unnecessary_safe_licenses(mocker: MockerFixture, check: CommandTester, license: str) -> None:
     safe_licenses = [f"{license}1", f"{license}2"]
     mocker.patch("pylic.cli.commands.check.read_config", return_value=(safe_licenses, []))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=[])
@@ -42,9 +38,7 @@ def test_check_yields_correct_unnecessary_safe_licenses(
     )
 
 
-def test_check_yields_correct_unnecessary_unsafe_packages(
-    mocker: MockerFixture, check: CommandTester, package: str
-) -> None:
+def test_check_yields_correct_unnecessary_unsafe_packages(mocker: MockerFixture, check: CommandTester, package: str) -> None:
     unsafe_packages = [f"{package}1", f"{package}2"]
     mocker.patch("pylic.cli.commands.check.read_config", return_value=([], unsafe_packages))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=[])
@@ -76,9 +70,7 @@ def test_check_yields_correct_bad_unsafe_packages(
     )
 
 
-def test_check_yields_correct_missing_unsafe_packages(
-    mocker: MockerFixture, check: CommandTester, package: str, version: str
-) -> None:
+def test_check_yields_correct_missing_unsafe_packages(mocker: MockerFixture, check: CommandTester, package: str, version: str) -> None:
     installed_licenses = [{"package": f"{package}", "license": "unknown", "version": version}]
     mocker.patch("pylic.cli.commands.check.read_config", return_value=([], []))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=installed_licenses)

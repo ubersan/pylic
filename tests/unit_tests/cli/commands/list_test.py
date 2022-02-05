@@ -22,8 +22,7 @@ def test_yields_correct_and_alphabetically_sorted_package_list(
 ) -> None:
     number_of_packages = 10
     license_metadata = [
-        {"package": f"{random_string()}", "license": f"{license}{i}", "version": f"{version}{i}"}
-        for i in range(0, number_of_packages)
+        {"package": f"{random_string()}", "license": f"{license}{i}", "version": f"{version}{i}"} for i in range(0, number_of_packages)
     ]
     mocker.patch("pylic.cli.commands.list.read_all_installed_licenses_metadata", return_value=license_metadata)
     return_code = list_command.execute()

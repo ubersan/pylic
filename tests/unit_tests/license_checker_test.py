@@ -76,9 +76,7 @@ def test_no_bad_unsafe_packages_if_no_unsafe_packages_are_provided(package: str,
     assert len(bad_unsafe_packages) == 0
 
 
-def test_no_bad_unsafe_packages_if_all_licenses_of_unsafe_packages_come_with_unknown_license(
-    package: str, version: str
-) -> None:
+def test_no_bad_unsafe_packages_if_all_licenses_of_unsafe_packages_come_with_unknown_license(package: str, version: str) -> None:
     checker = LicenseChecker(
         unsafe_packages=[f"{package}1", f"{package}2"],
         installed_licenses=[

@@ -15,9 +15,7 @@ def read_pyproject_file(mocker: MockerFixture, filename: str) -> None:
         mocker.patch("builtins.open", mocker.mock_open(read_data=pyproject_test_file.read()))
 
 
-def test_check_with_a_valid_config_yields_successful_output_and_return_code(
-    mocker: MockerFixture, test_app: ApplicationTester
-) -> None:
+def test_check_with_a_valid_config_yields_successful_output_and_return_code(mocker: MockerFixture, test_app: ApplicationTester) -> None:
     read_pyproject_file(mocker, "tests/integration_tests/test_tomls/valid.toml")
     return_code = test_app.execute("check")
     assert test_app.io.fetch_error() == ""
@@ -25,9 +23,7 @@ def test_check_with_a_valid_config_yields_successful_output_and_return_code(
     assert return_code == 0
 
 
-def test_correct_error_is_returned_when_an_unnecessary_unsafe_package_is_listed(
-    mocker: MockerFixture, test_app: ApplicationTester
-) -> None:
+def test_correct_error_is_returned_when_an_unnecessary_unsafe_package_is_listed(mocker: MockerFixture, test_app: ApplicationTester) -> None:
     read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_unsafe_package.toml")
     return_code = test_app.execute("check")
     assert test_app.io.fetch_error() == "Unsafe packages listed which are not installed:\n  not-installed\n"
@@ -35,9 +31,7 @@ def test_correct_error_is_returned_when_an_unnecessary_unsafe_package_is_listed(
     assert return_code == 1
 
 
-def test_correct_error_is_returned_when_an_unnecessary_safe_license_is_listed(
-    mocker: MockerFixture, test_app: ApplicationTester
-) -> None:
+def test_correct_error_is_returned_when_an_unnecessary_safe_license_is_listed(mocker: MockerFixture, test_app: ApplicationTester) -> None:
     read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_safe_license.toml")
     return_code = test_app.execute("check")
     assert (

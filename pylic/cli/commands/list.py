@@ -11,8 +11,7 @@ class ListCommand(Command):
         installed_licenses = read_all_installed_licenses_metadata()
 
         unsorted = {
-            installed["package"]: {"version": installed["version"], "license": installed["license"]}
-            for installed in installed_licenses
+            installed["package"]: {"version": installed["version"], "license": installed["license"]} for installed in installed_licenses
         }
 
         for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore

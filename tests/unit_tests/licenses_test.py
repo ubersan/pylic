@@ -52,9 +52,7 @@ def test_reading_license_from_metadata_without_license_entry_yields_unknown_lice
     assert read_license == "unknown"
 
 
-def test_reading_license_from_metadata_yields_provided_fallback_license_when_no_license_found(
-    mocker: MockerFixture, license: str
-) -> None:
+def test_reading_license_from_metadata_yields_provided_fallback_license_when_no_license_found(mocker: MockerFixture, license: str) -> None:
     distribution = mocker.MagicMock()
     distribution.metadata = {"Classifier": "Development Status :: 3 - Alpha"}
     read_license = _read_license_from_metadata(distribution, fallback=license)
