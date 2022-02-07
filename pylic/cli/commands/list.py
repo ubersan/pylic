@@ -1,13 +1,9 @@
-from cleo import Command
-
+from pylic.cli.commands.command import Command
 from pylic.licenses import read_all_installed_licenses_metadata
 
 
 class ListCommand(Command):
-    name = "list"
-    description = "Lists all installed packages and their corresponding license"
-
-    def handle(self) -> None:
+    def handle(self, args: list[str]) -> int:
         installed_licenses = read_all_installed_licenses_metadata()
 
         unsorted = {
@@ -15,4 +11,6 @@ class ListCommand(Command):
         }
 
         for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
-            self.line(f"{package} ({rest['version']}): {rest['license']}")
+            print(f"{package} ({rest['version']}): {rest['license']}")
+
+        return 0

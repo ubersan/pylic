@@ -2,6 +2,7 @@ from pylic.__version__ import version
 from pylic.cli.commands.command import Command
 
 
-class HelpCommand(Command):
+class VersionCommand(Command):
     def handle(self, args: list[str]) -> int:
-        return 1
+        print("version", version)
+        return 0
