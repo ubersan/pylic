@@ -1,9 +1,13 @@
 from pylic.cli.commands.command import Command
+from pylic.cli.console_writer import console_writer
 from pylic.licenses import read_all_installed_licenses_metadata
 
 
 class ListCommand(Command):
-    def handle(self, args: list[str]) -> int:
+    targets = ["list"]
+    token = "list"
+
+    def handle(self, options: list[str]) -> int:
         installed_licenses = read_all_installed_licenses_metadata()
 
         unsorted = {
@@ -11,6 +15,6 @@ class ListCommand(Command):
         }
 
         for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
-            print(f"{package} ({rest['version']}): {rest['license']}")
+            console_writer.line(f"{package} ({rest['version']}): {rest['license']}")
 
         return 0
