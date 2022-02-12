@@ -30,7 +30,7 @@ types-toml = "^0.10.1"
 pylic = 'pylic.cli.app:main'
 
 [tool.taskipy.tasks]
-quality = "black . && flake8 --max-line-length 120 --count . && isort . && mypy ."
+quality = "black . && flake8 --max-line-length 140 --count . && isort . && mypy ."
 test = "pytest --cov=./ --cov-report=xml"
 check_licenses = "python -m pylic check"
 get_current_version = "echo -n v$(sed '3q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"

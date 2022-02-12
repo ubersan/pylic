@@ -3,11 +3,7 @@ import random
 import pytest
 from pytest_mock import MockerFixture
 
-from pylic.licenses import (
-    _read_license_from_classifier,
-    _read_license_from_metadata,
-    read_all_installed_licenses_metadata,
-)
+from pylic.licenses import _read_license_from_classifier, _read_license_from_metadata, read_all_installed_licenses_metadata
 from tests.unit_tests.conftest import random_string
 
 
