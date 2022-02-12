@@ -12,7 +12,8 @@ def main() -> None:
 
     console_reader = ConsoleReader(commands=[CheckCommand(), ListCommand(), HelpCommand(), VersionCommand()])
     program = console_reader.get_program(sys.argv)
-    program.command.handle(program.options)
+    status_code = program.command.handle(program.options)
+    exit(status_code)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from pylic.__version__ import version
 from pylic.cli.commands.command import Command
-from pylic.cli.console_writer import console_writer
+from pylic.cli.console_writer import END_STYLE, LABEL, console_writer
 
 
 class VersionCommand(Command):
@@ -8,5 +8,5 @@ class VersionCommand(Command):
     token = "version"
 
     def handle(self, options: list[str]) -> int:
-        console_writer.line(f"version {version}")
+        console_writer.line(f"Pylic version {LABEL}{version}{END_STYLE}")
         return 0

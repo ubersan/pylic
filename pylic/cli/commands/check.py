@@ -1,5 +1,5 @@
 from pylic.cli.commands.command import Command
-from pylic.cli.console_writer import console_writer
+from pylic.cli.console_writer import BOLD, END_STYLE, LABEL, UNDERLINE, console_writer
 from pylic.license_checker import LicenseChecker
 from pylic.licenses import read_all_installed_licenses_metadata
 from pylic.toml import read_config
@@ -10,6 +10,10 @@ class CheckCommand(Command):
     token = "check"
 
     def handle(self, options: list[str]) -> int:
+        if "help" in options:
+            self._show_help()
+            return 1
+
         safe_licenses, unsafe_packages = read_config()
         installed_licenses = read_all_installed_licenses_metadata()
         checker = LicenseChecker(safe_licenses, unsafe_packages, installed_licenses)
@@ -58,3 +62,9 @@ class CheckCommand(Command):
 
         console_writer.write_all_licenses_ok()
         return 0
+
+    def _show_help(self) -> None:
+        console_writer.line(f"{BOLD}USAGE{END_STYLE}")
+        console_writer.line(f"  {UNDERLINE}pylic{END_STYLE} {UNDERLINE}check{END_STYLE} [-h]\n")
+        console_writer.line(f"{BOLD}GLOBAL OPTIONS{END_STYLE}")
+        console_writer.line(f"  {LABEL}-h{END_STYLE} (--help)\t\tDisplay this help message")
