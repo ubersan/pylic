@@ -1,3 +1,5 @@
+from typing import List
+
 from pylic.cli.commands.command import Command
 from pylic.cli.console_writer import BLUE, BOLD, END_STYLE, LABEL, UNDERLINE, console_writer
 from pylic.licenses import read_all_installed_licenses_metadata
@@ -7,7 +9,7 @@ class ListCommand(Command):
     targets = ["list"]
     token = "list"
 
-    def handle(self, options: list[str]) -> int:
+    def handle(self, options: List[str]) -> int:
         if "help" in options:
             self._show_help()
             return 1

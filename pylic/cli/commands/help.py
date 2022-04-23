@@ -1,3 +1,5 @@
+from typing import List
+
 from pylic.__version__ import version
 from pylic.cli.commands.command import Command
 from pylic.cli.console_writer import BOLD, END_STYLE, LABEL, UNDERLINE, console_writer
@@ -7,7 +9,7 @@ class HelpCommand(Command):
     targets = ["-h", "--help"]
     token = "help"
 
-    def handle(self, options: list[str]) -> int:
+    def handle(self, options: List[str]) -> int:
         console_writer.line(f"Pylic version {LABEL}{version}{END_STYLE}\n")
         console_writer.line(f'{self._header("USAGE")}')
         console_writer.line(f"  {UNDERLINE}pylic{END_STYLE} [-h] [-V] <command>\n")

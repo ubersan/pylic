@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import List, NamedTuple
 
 from pylic.cli.commands.command import Command
 from pylic.cli.console_writer import console_writer
@@ -6,7 +6,7 @@ from pylic.cli.console_writer import console_writer
 
 class Program(NamedTuple):
     command: Command
-    options: list[str]
+    options: List[str]
 
 
 class ConsoleReader:
@@ -15,11 +15,11 @@ class ConsoleReader:
         self.token_to_command = {command.token: command for command in commands}
         self.help_command = next(filter(lambda command: command.token == "help", commands))
 
-    def get_program(self, input: list[str]) -> Program:
+    def get_program(self, input: List[str]) -> Program:
         tokens = self._tokenize_input(input)
         return self._parse_tokens(tokens)
 
-    def _tokenize_input(self, raw_strings: list[str]) -> list[str]:
+    def _tokenize_input(self, raw_strings: List[str]) -> List[str]:
         tokens = []
         for raw in raw_strings:
             if raw.startswith("-"):
@@ -41,7 +41,7 @@ class ConsoleReader:
 
         return tokens
 
-    def _parse_tokens(self, tokens: list[str]) -> Program:
+    def _parse_tokens(self, tokens: List[str]) -> Program:
         if len(tokens) == 0:
             return Program(self.help_command, [])
 

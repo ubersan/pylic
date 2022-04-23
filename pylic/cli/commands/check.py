@@ -1,3 +1,5 @@
+from typing import List
+
 from pylic.cli.commands.command import Command
 from pylic.cli.console_writer import BLUE, BOLD, END_STYLE, LABEL, UNDERLINE, WARNING, console_writer
 from pylic.license_checker import LicenseChecker
@@ -9,7 +11,7 @@ class CheckCommand(Command):
     targets = ["check"]
     token = "check"
 
-    def handle(self, options: list[str]) -> int:
+    def handle(self, options: List[str]) -> int:
         if "help" in options:
             self._show_help()
             return 1
