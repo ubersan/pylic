@@ -8,7 +8,6 @@ from pylic.cli.console_reader import ConsoleReader
 
 
 def main() -> None:
-    print(sys.argv)
     sys.argv.pop(0)
 
     program = ConsoleReader(
