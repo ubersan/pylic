@@ -10,7 +10,7 @@ class Program(NamedTuple):
 
 
 class ConsoleReader:
-    def __init__(self, commands: list[Command]) -> None:
+    def __init__(self, commands: List[Command]) -> None:
         self.target_to_token = {target: command for command in commands for target in command.targets}
         self.token_to_command = {command.token: command for command in commands}
         self.help_command = next(filter(lambda command: command.token == "help", commands))
