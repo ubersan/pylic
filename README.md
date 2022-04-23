@@ -102,7 +102,7 @@ EOT
 After rerunning `pylic check` the output now reveals a successful validation
 
 ```sh
-All licenses ok
+✨ All licenses ok ✨
 ```
 
 Also the return code now signals that all is good
