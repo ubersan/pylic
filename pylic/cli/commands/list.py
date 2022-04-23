@@ -16,6 +16,7 @@ class ListCommand(Command):
         unsorted = {
             installed["package"]: {"version": installed["version"], "license": installed["license"]} for installed in installed_licenses
         }
+        print("console_writer", console_writer)
         for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
             console_writer.line(f"{BLUE}{package}{END_STYLE} {LABEL}({rest['version']}){END_STYLE}: {rest['license']}")
         return 0
@@ -24,4 +25,6 @@ class ListCommand(Command):
         console_writer.line(f"{BOLD}USAGE{END_STYLE}")
         console_writer.line(f"  {UNDERLINE}pylic{END_STYLE} {UNDERLINE}list{END_STYLE} [-h]\n")
         console_writer.line(f"{BOLD}GLOBAL OPTIONS{END_STYLE}")
-        console_writer.line(f"  {LABEL}-h{END_STYLE} (--help)\t\tDisplay this help message")
+        console_writer.line(f"  {LABEL}-h{END_STYLE} (--help)\tDisplay this help message\n")
+        console_writer.line(f"{BOLD}DESCRIPTION{END_STYLE}")
+        console_writer.line("  Lists all installed packages and their corresponding license.")
