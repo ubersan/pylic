@@ -30,6 +30,4 @@ def test_unknown_license_can_not_be_safe() -> None:
     with pytest.raises(ValueError) as exception:
         read_config("tests/unit_tests/test_tomls/unknown_license_allowed.toml")
 
-    assert (
-        exception.value.args[0] == "'unknown' can't be an safe license. Whitelist the corresponding packages instead."
-    )
+    assert exception.value.args[0] == "'unknown' can't be an safe license. Whitelist the corresponding packages instead."

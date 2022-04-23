@@ -1,15 +1,21 @@
-from cleo import Command
+from typing import List
 
+from pylic.cli.commands.command import Command
+from pylic.cli.console_writer import BLUE, BOLD, END_STYLE, LABEL, UNDERLINE, WARNING, console_writer
 from pylic.license_checker import LicenseChecker
 from pylic.licenses import read_all_installed_licenses_metadata
 from pylic.toml import read_config
 
 
 class CheckCommand(Command):
-    name = "check"
-    description = "Checks all installed licenses"
+    targets = ["check"]
+    token = "check"
 
-    def handle(self) -> int:
+    def handle(self, options: List[str]) -> int:
+        if "help" in options:
+            self._show_help()
+            return 1
+
         safe_licenses, unsafe_packages = read_config()
         installed_licenses = read_all_installed_licenses_metadata()
         checker = LicenseChecker(safe_licenses, unsafe_packages, installed_licenses)
@@ -30,31 +36,57 @@ class CheckCommand(Command):
             ]
         ):
             if len(unnecessary_safe_licenses) > 0:
-                self.line_error("Unnecessary safe licenses listed which are not used by any installed package:")
+                console_writer.line("Unnecessary safe licenses listed which are not used by any installed package:")
                 for unnecessary_safe_license in unnecessary_safe_licenses:
-                    self.line_error(f"  {unnecessary_safe_license}")
+                    console_writer.line(f"  {WARNING}{unnecessary_safe_license}{END_STYLE}")
 
             if len(unnecessary_unsafe_packages) > 0:
-                self.line_error("Unsafe packages listed which are not installed:")
+                console_writer.line("Unsafe packages listed which are not installed:")
                 for unnecessary_unsafe_package in unnecessary_unsafe_packages:
-                    self.line_error(f"  {unnecessary_unsafe_package}")
+                    console_writer.line(f"  {WARNING}{unnecessary_unsafe_package}{END_STYLE}")
 
             if len(bad_unsafe_packages) > 0:
-                self.line_error("Found unsafe packages with a known license. Instead allow these licenses explicitly:")
+                console_writer.line("Found unsafe packages with a known license. Instead allow these licenses explicitly:")
                 for bad_package in bad_unsafe_packages:
-                    self.line_error(f"  {bad_package['package']} ({bad_package['version']}): {bad_package['license']}")
+                    console_writer.line(
+                        (
+                            f"  {WARNING}{bad_package['package']}{END_STYLE} {LABEL}({bad_package['version']}{END_STYLE}): "
+                            f"{BLUE}{bad_package['license']}{END_STYLE}"
+                        )
+                    )
 
             if len(missing_unsafe_packages) > 0:
-                self.line_error("Found unsafe packages:")
+                console_writer.line("Found unsafe packages:")
                 for missing_unsafe_package in missing_unsafe_packages:
-                    self.line_error(f"  {missing_unsafe_package['package']} ({missing_unsafe_package['version']})")
+                    console_writer.line(
+                        (
+                            f"  {WARNING}{missing_unsafe_package['package']}{END_STYLE} "
+                            f"{LABEL}({missing_unsafe_package['version']}){END_STYLE}"
+                        )
+                    )
 
             if len(unsafe_licenses) > 0:
-                self.line_error("Found unsafe licenses:")
+                console_writer.line("Found unsafe licenses:")
                 for bad_license in unsafe_licenses:
-                    self.line_error(f"  {bad_license['package']} ({bad_license['version']}): {bad_license['license']}")
+                    console_writer.line(
+                        (
+                            f"  {BLUE}{bad_license['package']}{END_STYLE} {LABEL}({bad_license['version']}){END_STYLE}: "
+                            f"{WARNING}{bad_license['license']}{END_STYLE}"
+                        )
+                    )
 
             return 1
 
-        self.info("All licenses ok")
+        console_writer.write_all_licenses_ok()
         return 0
+
+    def _show_help(self) -> None:
+        console_writer.line(f"{BOLD}USAGE{END_STYLE}")
+        console_writer.line(f"  {UNDERLINE}pylic{END_STYLE} {UNDERLINE}check{END_STYLE} [-h]\n")
+        console_writer.line(f"{BOLD}GLOBAL OPTIONS{END_STYLE}")
+        console_writer.line(f"  {LABEL}-h{END_STYLE} (--help)\tDisplay this help message\n")
+        console_writer.line(f"{BOLD}DESCRIPTION{END_STYLE}")
+        console_writer.line("  Checks all installed licenses against the configuaration provided in the [tool.pylic]")
+        console_writer.line("  section of the pyproject.toml file.\n")
+        console_writer.line(f"    - {BOLD}safe_licenses{END_STYLE}: Licenses considered to be valid.")
+        console_writer.line(f"    - {BOLD}unsafe_packages{END_STYLE}: Packages without a license yet to be considered valid.")

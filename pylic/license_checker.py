@@ -70,8 +70,6 @@ class LicenseChecker:
             if license.lower() == "unknown" or license.lower() in lower_safe_licenses:
                 continue
 
-            unsafe_licenses.append(
-                {"license": license, "package": license_info["package"], "version": license_info["version"]}
-            )
+            unsafe_licenses.append({"license": license, "package": license_info["package"], "version": license_info["version"]})
 
         return unsafe_licenses
