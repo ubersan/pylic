@@ -18,7 +18,6 @@ class ListCommand(Command):
         unsorted = {
             installed["package"]: {"version": installed["version"], "license": installed["license"]} for installed in installed_licenses
         }
-        print("console_writer", console_writer)
         for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
             console_writer.line(f"{BLUE}{package}{END_STYLE} {LABEL}({rest['version']}){END_STYLE}: {rest['license']}")
         return 0
