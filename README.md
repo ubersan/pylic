@@ -17,8 +17,9 @@ pip install pylic
 ## Configuration
 
 `pylic` needs be run in the directory where your `pyproject.toml` file is located. You can configure
-- `safe_licenses`: All licenses you concider safe for usage. The string comparison is case-insensitive.
+- `safe_licenses`: All licenses you consider safe for usage. The string comparison is case-insensitive.
 - `unsafe_packages`: If you rely on a package that does not come with a license you have to explicitly list it as such.
+- `ignore_packages`: Packages that will not be reported as unsafe even if they use a license not listed as safe.
 
 ```toml
 [tool.pylic]
@@ -31,6 +32,9 @@ safe_licenses = [
 ]
 unsafe_packages = [
     "unlicensedPackage",
+]
+ignore_packages = [
+    "ignoredPackage",
 ]
 ```
 
@@ -118,7 +122,7 @@ Use `pylic list` to list all installed packages and their corresponding licenses
 Required tools:
 - Poetry (https://python-poetry.org/)
 
-Run `poetry install` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utily tasks. You can run these with `poetry run task <task>`.
+Run `poetry install` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `poetry run task <task>`.
 
 Creating a new release is as simple as:
 - Update `version` in the pyproject.toml and the `__version__.py` file.

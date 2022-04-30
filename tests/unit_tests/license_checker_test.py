@@ -186,3 +186,23 @@ def test_correct_unsafe_licenses_are_found(package: str, license: str, version: 
     unsafe_licenses = checker.get_unsafe_licenses()
     assert len(unsafe_licenses) == 3
     assert unsafe_licenses == bad_licenses
+
+
+def test_correct_unsafe_licenses_are_found_when_packages_ignored(package: str, license: str, version: str) -> None:
+    bad_licenses = [
+        {"license": f"{license}1", "package": f"{package}1", "version": f"{version}1"},
+        {"license": f"{license}3", "package": f"{package}3", "version": f"{version}3"},
+        {"license": f"{license}4", "package": f"{package}4", "version": f"{version}4"},
+    ]
+    ignore_packages = [f"{package}1"]
+    checker = LicenseChecker(
+        safe_licenses=[f"{license}2"],
+        ignore_packages=ignore_packages,
+        installed_licenses=[
+            *bad_licenses,
+            {"license": f"{license}2", "package": package, "version": f"{version}2"},
+        ],
+    )
+    unsafe_licenses = checker.get_unsafe_licenses()
+    assert len(unsafe_licenses) == 2
+    assert all(license in unsafe_licenses for license in bad_licenses if license["package"] not in ignore_packages)

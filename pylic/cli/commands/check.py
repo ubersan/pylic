@@ -16,9 +16,9 @@ class CheckCommand(Command):
             self._show_help()
             return 1
 
-        safe_licenses, unsafe_packages = read_config()
+        safe_licenses, unsafe_packages, ignore_packages = read_config()
         installed_licenses = read_all_installed_licenses_metadata()
-        checker = LicenseChecker(safe_licenses, unsafe_packages, installed_licenses)
+        checker = LicenseChecker(safe_licenses, unsafe_packages, ignore_packages, installed_licenses)
 
         unnecessary_safe_licenses = checker.get_unnecessary_safe_licenses()
         unnecessary_unsafe_packages = checker.get_unnecessary_unsafe_packages()

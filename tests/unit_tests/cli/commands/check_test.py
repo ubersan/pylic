@@ -20,7 +20,7 @@ def check_command() -> CheckCommand:
 def test_check_is_valid_if_no_packages_are_installed_and_config_is_empty(
     mocker: MockerFixture, check_command: CheckCommand, console_writer: MagicMock
 ) -> None:
-    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], []))
+    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], [], []))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=[])
     return_code = check_command.handle([])
     assert return_code == 0
@@ -31,7 +31,7 @@ def test_check_yields_correct_unnecessary_safe_licenses(
     mocker: MockerFixture, check_command: CheckCommand, license: str, console_writer: MagicMock
 ) -> None:
     safe_licenses = [f"{license}1", f"{license}2"]
-    mocker.patch("pylic.cli.commands.check.read_config", return_value=(safe_licenses, []))
+    mocker.patch("pylic.cli.commands.check.read_config", return_value=(safe_licenses, [], []))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=[])
     return_code = check_command.handle([])
     assert return_code == 1
@@ -41,11 +41,13 @@ def test_check_yields_correct_unnecessary_safe_licenses(
     assert f"{license}2" in lines[2]
 
 
+@pytest.mark.parametrize("package_ignored", [True, False])
 def test_check_yields_correct_unnecessary_unsafe_packages(
-    mocker: MockerFixture, check_command: CheckCommand, package: str, console_writer: MagicMock
+    mocker: MockerFixture, check_command: CheckCommand, package: str, console_writer: MagicMock, package_ignored: bool
 ) -> None:
     unsafe_packages = [f"{package}1", f"{package}2"]
-    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], unsafe_packages))
+    ignore_packages = [unsafe_packages[0]] if package_ignored else []
+    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], unsafe_packages, ignore_packages))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=[])
     return_code = check_command.handle([])
     assert return_code == 1
@@ -55,12 +57,20 @@ def test_check_yields_correct_unnecessary_unsafe_packages(
     assert f"{package}2" in lines[2]
 
 
+@pytest.mark.parametrize("package_ignored", [True, False])
 def test_check_yields_correct_bad_unsafe_packages(
-    mocker: MockerFixture, check_command: CheckCommand, package: str, license: str, version: str, console_writer: MagicMock
+    mocker: MockerFixture,
+    check_command: CheckCommand,
+    package: str,
+    license: str,
+    version: str,
+    console_writer: MagicMock,
+    package_ignored: bool,
 ) -> None:
     unsafe_packages = [f"{package}"]
+    ignore_packages = unsafe_packages if package_ignored else []
     installed_licenses = [{"package": f"{package}", "license": license, "version": version}]
-    mocker.patch("pylic.cli.commands.check.read_config", return_value=([license], unsafe_packages))
+    mocker.patch("pylic.cli.commands.check.read_config", return_value=([license], unsafe_packages, ignore_packages))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=installed_licenses)
     return_code = check_command.handle([])
     assert return_code == 1
@@ -71,11 +81,13 @@ def test_check_yields_correct_bad_unsafe_packages(
     assert license in lines[1]
 
 
+@pytest.mark.parametrize("package_ignored", [True, False])
 def test_check_yields_correct_missing_unsafe_packages(
-    mocker: MockerFixture, check_command: CheckCommand, package: str, version: str, console_writer: MagicMock
+    mocker: MockerFixture, check_command: CheckCommand, package: str, version: str, console_writer: MagicMock, package_ignored: bool
 ) -> None:
+    ignore_packages = [f"{package}"] if package_ignored else []
     installed_licenses = [{"package": f"{package}", "license": "unknown", "version": version}]
-    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], []))
+    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], [], ignore_packages))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=installed_licenses)
     return_code = check_command.handle([])
     assert return_code == 1
@@ -89,7 +101,7 @@ def test_check_yields_correct_unsafe_licenses(
     mocker: MockerFixture, check_command: CheckCommand, package: str, license: str, version: str, console_writer: MagicMock
 ) -> None:
     installed_licenses = [{"package": f"{package}", "license": license, "version": version}]
-    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], []))
+    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], [], []))
     mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=installed_licenses)
     return_code = check_command.handle([])
     assert return_code == 1
@@ -98,3 +110,15 @@ def test_check_yields_correct_unsafe_licenses(
     assert package in lines[1]
     assert version in lines[1]
     assert license in lines[1]
+
+
+def test_check_yields_correct_unsafe_licenses_when_packages_ignored(
+    mocker: MockerFixture, check_command: CheckCommand, package: str, license: str, version: str, console_writer: MagicMock
+) -> None:
+    ignore_packages = [f"{package}"]
+    installed_licenses = [{"package": f"{package}", "license": license, "version": version}]
+    mocker.patch("pylic.cli.commands.check.read_config", return_value=([], [], ignore_packages))
+    mocker.patch("pylic.cli.commands.check.read_all_installed_licenses_metadata", return_value=installed_licenses)
+    return_code = check_command.handle([])
+    assert return_code == 0
+    console_writer.write_all_licenses_ok.assert_called()

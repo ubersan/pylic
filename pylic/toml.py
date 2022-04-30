@@ -3,7 +3,7 @@ from typing import Any, List, MutableMapping, Tuple
 import toml
 
 
-def read_config(filename: str = "pyproject.toml") -> Tuple[List[str], List[str]]:
+def read_config(filename: str = "pyproject.toml") -> Tuple[List[str], List[str], List[str]]:
     project_config = _read_pyproject_file(filename)
     pylic_config = project_config.get("tool", {}).get("pylic", {})
     safe_licenses: List[str] = pylic_config.get("safe_licenses", [])
@@ -12,8 +12,9 @@ def read_config(filename: str = "pyproject.toml") -> Tuple[List[str], List[str]]
         raise ValueError("'unknown' can't be an safe license. Whitelist the corresponding packages instead.")
 
     unsafe_packages: List[str] = pylic_config.get("unsafe_packages", [])
+    ignore_packages: List[str] = pylic_config.get("ignore_packages", [])
 
-    return (safe_licenses, unsafe_packages)
+    return (safe_licenses, unsafe_packages, ignore_packages)
 
 
 def _read_pyproject_file(filename: str) -> MutableMapping[str, Any]:

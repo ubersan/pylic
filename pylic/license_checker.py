@@ -6,10 +6,12 @@ class LicenseChecker:
         self,
         safe_licenses: Optional[List[str]] = None,
         unsafe_packages: Optional[List[str]] = None,
+        ignore_packages: Optional[List[str]] = None,
         installed_licenses: Optional[List[Dict]] = None,
     ) -> None:
         self.safe_licenses = safe_licenses or []
         self.unsafe_packages = unsafe_packages or []
+        self.ignore_packages = ignore_packages or []
         self.installed_licenses = installed_licenses or []
 
     def get_unnecessary_safe_licenses(self) -> List[str]:
@@ -64,7 +66,7 @@ class LicenseChecker:
         unsafe_licenses: List[Dict] = []
         lower_safe_licenses = [safe_license.lower() for safe_license in self.safe_licenses]
 
-        for license_info in self.installed_licenses:
+        for license_info in filter(lambda license_info: license_info["package"] not in self.ignore_packages, self.installed_licenses):
             license = license_info["license"]
 
             if license.lower() == "unknown" or license.lower() in lower_safe_licenses:
