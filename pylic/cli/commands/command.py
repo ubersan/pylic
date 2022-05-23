@@ -6,4 +6,4 @@ class Command:
     token: str
 
     def handle(self, options: List[str]) -> int:
-        raise NotImplementedError()
+        raise NotImplementedError()  # pragma: no cover

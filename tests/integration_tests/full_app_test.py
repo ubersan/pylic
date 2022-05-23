@@ -81,3 +81,50 @@ def test_correct_error_is_returned_when_bad_unsafe_package(mocker: MockerFixture
     # )
     # assert app.io.fetch_output() == ""
     # assert return_code == 1
+
+
+def test_correct_error_is_returned_when_no_such_command(mocker: MockerFixture) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/valid.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("bogus")
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 1
+
+
+def test_correct_error_is_returned_when_no_such_option(mocker: MockerFixture) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/valid.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("--bogus")
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 1
+
+
+def test_correct_error_is_returned_when_help_option(mocker: MockerFixture) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/valid.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("--help")
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 1
+
+
+def test_correct_error_is_returned_when_no_tokens(mocker: MockerFixture) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/valid.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 1

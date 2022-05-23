@@ -16,12 +16,13 @@ class CheckCommand(Command):
             self._show_help()
             return 1
 
-        safe_licenses, unsafe_packages = read_config()
+        config = read_config()
         installed_licenses = read_all_installed_licenses_metadata()
-        checker = LicenseChecker(safe_licenses, unsafe_packages, installed_licenses)
+        checker = LicenseChecker(config, installed_licenses)
 
         unnecessary_safe_licenses = checker.get_unnecessary_safe_licenses()
         unnecessary_unsafe_packages = checker.get_unnecessary_unsafe_packages()
+        unnecessary_ignore_packages = checker.get_unnecessary_ignore_packages()
         bad_unsafe_packages = checker.get_bad_unsafe_packages()
         missing_unsafe_packages = checker.get_missing_unsafe_packages()
         unsafe_licenses = checker.get_unsafe_licenses()
@@ -30,9 +31,10 @@ class CheckCommand(Command):
             [
                 unnecessary_safe_licenses,
                 unnecessary_unsafe_packages,
+                unnecessary_ignore_packages,
                 bad_unsafe_packages,
                 missing_unsafe_packages,
-                unsafe_licenses,
+                unsafe_licenses.found,
             ]
         ):
             if len(unnecessary_safe_licenses) > 0:
@@ -44,6 +46,11 @@ class CheckCommand(Command):
                 console_writer.line("Unsafe packages listed which are not installed:")
                 for unnecessary_unsafe_package in unnecessary_unsafe_packages:
                     console_writer.line(f"  {WARNING}{unnecessary_unsafe_package}{END_STYLE}")
+
+            if len(unnecessary_ignore_packages) > 0:
+                console_writer.line("Ignore packages listed which are not installed:")
+                for unnecessary_ignore_package in unnecessary_ignore_packages:
+                    console_writer.line(f"  {WARNING}{unnecessary_ignore_package}{END_STYLE}")
 
             if len(bad_unsafe_packages) > 0:
                 console_writer.line("Found unsafe packages with a known license. Instead allow these licenses explicitly:")
@@ -65,9 +72,9 @@ class CheckCommand(Command):
                         )
                     )
 
-            if len(unsafe_licenses) > 0:
+            if len(unsafe_licenses.found) > 0:
                 console_writer.line("Found unsafe licenses:")
-                for bad_license in unsafe_licenses:
+                for bad_license in unsafe_licenses.found:
                     console_writer.line(
                         (
                             f"  {BLUE}{bad_license['package']}{END_STYLE} {LABEL}({bad_license['version']}){END_STYLE}: "
@@ -76,6 +83,16 @@ class CheckCommand(Command):
                     )
 
             return 1
+
+        if len(unsafe_licenses.ignored) > 0:
+            console_writer.line("Ignored packages with unsafe licenses:")
+            for bad_license in unsafe_licenses.ignored:
+                console_writer.line(
+                    (
+                        f"  {BLUE}{bad_license['package']}{END_STYLE} {LABEL}({bad_license['version']}){END_STYLE}: "
+                        f"{WARNING}{bad_license['license']}{END_STYLE}"
+                    )
+                )
 
         console_writer.write_all_licenses_ok()
         return 0
@@ -90,3 +107,4 @@ class CheckCommand(Command):
         console_writer.line("  section of the pyproject.toml file.\n")
         console_writer.line(f"    - {BOLD}safe_licenses{END_STYLE}: Licenses considered to be valid.")
         console_writer.line(f"    - {BOLD}unsafe_packages{END_STYLE}: Packages without a license yet to be considered valid.")
+        console_writer.line(f"    - {BOLD}ignore_packages{END_STYLE}: Packages that are not considered at all.")
