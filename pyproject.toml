@@ -31,7 +31,7 @@ pylic = 'pylic.cli.app:main'
 
 [tool.taskipy.tasks]
 check_licenses = "python -m pylic check"
-get_current_version = "echo -n v$(sed '3q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"
+get_current_version = "echo -n v$(sed '11q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"
 quality = "black . && flake8 --max-line-length 140 --count . && isort . && mypy ."
 release = " git tag $(task get_current_version) && git push origin $(task get_current_version)"
 test = "pytest --cov=./ --cov-report=xml"
