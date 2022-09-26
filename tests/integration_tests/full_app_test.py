@@ -1,5 +1,6 @@
 import sys
 
+import pytest
 from pytest_mock import MockerFixture
 
 from pylic.cli.app import main as app
@@ -45,6 +46,22 @@ def test_correct_error_is_returned_when_an_unnecessary_unsafe_package_is_listed(
     # assert return_code == 1
 
 
+@pytest.mark.parametrize("allow_option", ["-p", "--allow-extra-unused-packages"])
+def test_correct_error_is_returned_when_an_unnecessary_unsafe_package_is_listed_but_with_allow_extra_option_set(
+    mocker: MockerFixture, allow_option: str
+) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_unsafe_package.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("check")
+    sys.argv.append(allow_option)
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 0
+
+
 def test_correct_error_is_returned_when_an_unnecessary_safe_license_is_listed(mocker: MockerFixture) -> None:
     read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_safe_license.toml")
     sys.argv.clear()
@@ -61,6 +78,54 @@ def test_correct_error_is_returned_when_an_unnecessary_safe_license_is_listed(mo
     # )
     # assert app.io.fetch_output() == ""
     # assert return_code == 1
+
+
+@pytest.mark.parametrize("allow_option", ["-l", "--allow-extra-safe-licenses"])
+def test_correct_error_is_returned_when_an_unnecessary_safe_license_is_listed_but_with_allow_extra_option_set(
+    mocker: MockerFixture, allow_option: str
+) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_safe_license.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("check")
+    sys.argv.append(allow_option)
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 0
+
+
+@pytest.mark.parametrize("allow_option", ["-l", "--allow-extra-safe-licenses", "-p", "--allow-extra-unused-packages"])
+def test_correct_error_is_returned_when_an_unnecessary_safe_license_and_unsafe_package_is_listed_but_only_one_is_allowed(
+    mocker: MockerFixture, allow_option: str
+) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_unsafe_package_and_safe_license.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("check")
+    sys.argv.append(allow_option)
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 1
+
+
+def test_correct_error_is_returned_when_an_unnecessary_safe_license_and_unsafe_package_is_listed_and_both_are_allowed(
+    mocker: MockerFixture,
+) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_unsafe_package_and_safe_license.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("check")
+    sys.argv.append("-l")
+    sys.argv.append("-p")
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 0
 
 
 def test_correct_error_is_returned_when_bad_unsafe_package(mocker: MockerFixture) -> None:
