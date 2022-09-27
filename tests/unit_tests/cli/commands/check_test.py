@@ -37,7 +37,7 @@ def test_check_is_valid_if_no_packages_are_installed_and_config_is_empty(check_c
     console_writer.write_all_licenses_ok.assert_called()
 
 
-def test_check_yields_correct_unnecessary_safe_licenses(
+def test_check_yields_correct_unnecessary_safe_licenses_and_status_code_is_1(
     check_command: CheckCommand,
     license: str,
     console_writer: MagicMock,
@@ -53,8 +53,40 @@ def test_check_yields_correct_unnecessary_safe_licenses(
     assert f"{license}2" in lines[2]
 
 
+def test_check_yields_correct_unnecessary_safe_licenses_warnings_but_status_code_is_0_if_correct_option_is_set(
+    check_command: CheckCommand,
+    license: str,
+    console_writer: MagicMock,
+    read_config: MagicMock,
+) -> None:
+    safe_licenses = [f"{license}1", f"{license}2"]
+    read_config.return_value = AppConfig(safe_licenses, [], [])
+    return_code = check_command.handle(["allow_extra_licenses"])
+    assert return_code == 0
+    lines = list(map(lambda line: cast(str, line[0][0]), console_writer.line.call_args_list))
+    assert lines[0] == "Unnecessary safe licenses listed which are not used by any installed package:"
+    assert f"{license}1" in lines[1]
+    assert f"{license}2" in lines[2]
+
+
+def test_check_yields_correct_unnecessary_safe_licenses_warnings_but_status_code_is_1_if_wrong_option_is_set(
+    check_command: CheckCommand,
+    license: str,
+    console_writer: MagicMock,
+    read_config: MagicMock,
+) -> None:
+    safe_licenses = [f"{license}1", f"{license}2"]
+    read_config.return_value = AppConfig(safe_licenses, [], [])
+    return_code = check_command.handle(["allow_extra_packages"])
+    assert return_code == 1
+    lines = list(map(lambda line: cast(str, line[0][0]), console_writer.line.call_args_list))
+    assert lines[0] == "Unnecessary safe licenses listed which are not used by any installed package:"
+    assert f"{license}1" in lines[1]
+    assert f"{license}2" in lines[2]
+
+
 @pytest.mark.parametrize("package_ignored", [True, False])
-def test_check_yields_correct_unnecessary_unsafe_packages(
+def test_check_yields_correct_unnecessary_unsafe_packages_and_status_code_is_1(
     check_command: CheckCommand,
     package: str,
     console_writer: MagicMock,
@@ -70,6 +102,67 @@ def test_check_yields_correct_unnecessary_unsafe_packages(
     assert lines[0] == "Unsafe packages listed which are not installed:"
     assert f"{package}1" in lines[1]
     assert f"{package}2" in lines[2]
+
+
+@pytest.mark.parametrize("package_ignored", [True, False])
+def test_check_yields_correct_unnecessary_unsafe_packages_but_status_code_is_0_if_correct_option_is_set(
+    check_command: CheckCommand,
+    package: str,
+    console_writer: MagicMock,
+    package_ignored: bool,
+    read_config: MagicMock,
+) -> None:
+    unsafe_packages = [f"{package}1", f"{package}2"]
+    ignore_packages = [unsafe_packages[0]] if package_ignored else []
+    read_config.return_value = AppConfig([], unsafe_packages, ignore_packages)
+    return_code = check_command.handle(["allow_extra_packages"])
+    assert return_code == 0
+    lines = list(map(lambda line: cast(str, line[0][0]), console_writer.line.call_args_list))
+    assert lines[0] == "Unsafe packages listed which are not installed:"
+    assert f"{package}1" in lines[1]
+    assert f"{package}2" in lines[2]
+
+
+@pytest.mark.parametrize("package_ignored", [True, False])
+def test_check_yields_correct_unnecessary_unsafe_packages_but_status_code_is_1_if_wrong_option_is_set(
+    check_command: CheckCommand,
+    package: str,
+    console_writer: MagicMock,
+    package_ignored: bool,
+    read_config: MagicMock,
+) -> None:
+    unsafe_packages = [f"{package}1", f"{package}2"]
+    ignore_packages = [unsafe_packages[0]] if package_ignored else []
+    read_config.return_value = AppConfig([], unsafe_packages, ignore_packages)
+    return_code = check_command.handle(["allow_extra_licenses"])
+    assert return_code == 1
+    lines = list(map(lambda line: cast(str, line[0][0]), console_writer.line.call_args_list))
+    assert lines[0] == "Unsafe packages listed which are not installed:"
+    assert f"{package}1" in lines[1]
+    assert f"{package}2" in lines[2]
+
+
+@pytest.mark.parametrize("package_ignored", [True, False])
+def test_check_yields_correct_unnecessary_unsafe_packages_and_safe_licenses_but_status_code_is_0_if_correct_options_are_set(
+    check_command: CheckCommand,
+    package: str,
+    console_writer: MagicMock,
+    package_ignored: bool,
+    read_config: MagicMock,
+) -> None:
+    safe_licenses = [f"{license}1", f"{license}2"]
+    unsafe_packages = [f"{package}1", f"{package}2"]
+    ignore_packages = [unsafe_packages[0]] if package_ignored else []
+    read_config.return_value = AppConfig(safe_licenses, unsafe_packages, ignore_packages)
+    return_code = check_command.handle(["allow_extra_packages", "allow_extra_licenses"])
+    assert return_code == 0
+    lines = list(map(lambda line: cast(str, line[0][0]), console_writer.line.call_args_list))
+    assert lines[0] == "Unnecessary safe licenses listed which are not used by any installed package:"
+    assert f"{license}1" in lines[1]
+    assert f"{license}2" in lines[2]
+    assert lines[3] == "Unsafe packages listed which are not installed:"
+    assert f"{package}1" in lines[4]
+    assert f"{package}2" in lines[5]
 
 
 def test_check_yields_correct_unnecessary_ignore_packages(

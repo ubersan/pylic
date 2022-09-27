@@ -1,6 +1,6 @@
 from typing import List
 
-from pylic.cli.commands.command import Command
+from pylic.cli.commands.command import Command, TargetsToToken
 from pylic.cli.console_writer import BLUE, BOLD, END_STYLE, LABEL, UNDERLINE, WARNING, console_writer
 from pylic.license_checker import LicenseChecker
 from pylic.licenses import read_all_installed_licenses_metadata
@@ -8,8 +8,12 @@ from pylic.toml import read_config
 
 
 class CheckCommand(Command):
-    targets = ["check"]
-    token = "check"
+    targets_to_token = TargetsToToken(targets=["check"], token="check")
+    option_targets_to_token = [
+        TargetsToToken(targets=["--allow-extra-unused-packages", "-p"], token="allow_extra_packages"),
+        TargetsToToken(targets=["--allow-extra-safe-licenses", "-l"], token="allow_extra_licenses"),
+        TargetsToToken(targets=["--help", "-h"], token="help"),
+    ]
 
     def handle(self, options: List[str]) -> int:
         if "help" in options:
@@ -82,6 +86,16 @@ class CheckCommand(Command):
                         )
                     )
 
+            if not all([unnecessary_ignore_packages, bad_unsafe_packages, missing_unsafe_packages, unsafe_licenses.found]):
+                extra_packages_declared_and_allowed = len(unnecessary_unsafe_packages) > 0 and "allow_extra_packages" in options
+                extra_licenses_declared_and_allowed = len(unnecessary_safe_licenses) > 0 and "allow_extra_licenses" in options
+                if (
+                    (not unnecessary_safe_licenses and extra_packages_declared_and_allowed)
+                    or (not unnecessary_unsafe_packages and extra_licenses_declared_and_allowed)
+                    or (extra_licenses_declared_and_allowed and extra_packages_declared_and_allowed)
+                ):
+                    return 0
+
             return 1
 
         if len(unsafe_licenses.ignored) > 0:
@@ -99,9 +113,11 @@ class CheckCommand(Command):
 
     def _show_help(self) -> None:
         console_writer.line(f"{BOLD}USAGE{END_STYLE}")
-        console_writer.line(f"  {UNDERLINE}pylic{END_STYLE} {UNDERLINE}check{END_STYLE} [-h]\n")
-        console_writer.line(f"{BOLD}GLOBAL OPTIONS{END_STYLE}")
-        console_writer.line(f"  {LABEL}-h{END_STYLE} (--help)\tDisplay this help message\n")
+        console_writer.line(f"  {UNDERLINE}pylic{END_STYLE} {UNDERLINE}check{END_STYLE} [-h] [-l] [-p]\n")
+        console_writer.line(f"{BOLD}OPTIONS{END_STYLE}")
+        console_writer.line(f"  {LABEL}-h{END_STYLE} (--help)\t\t\t\tDisplay this help message")
+        console_writer.line(f"  {LABEL}-l{END_STYLE} (--allow-extra-safe-licenses)\tAllow to list extra safe licenses")
+        console_writer.line(f"  {LABEL}-p{END_STYLE} (--allow-extra-unused-packages)\tAllow to list extra unused packages\n")
         console_writer.line(f"{BOLD}DESCRIPTION{END_STYLE}")
         console_writer.line("  Checks all installed licenses against the configuaration provided in the [tool.pylic]")
         console_writer.line("  section of the pyproject.toml file.\n")
