@@ -8,14 +8,14 @@ jobs:
   quality-checks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - name: Install poetry
       run: pip install poetry
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       with:
         path: ~/.cache/pypoetry/virtualenvs
         key: poetry-${{ hashFiles('poetry.lock') }}
@@ -30,7 +30,7 @@ jobs:
       run: |
         poetry run task test
     - name: Upload code coverage to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml
         name: codecov-umbrella
