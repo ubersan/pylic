@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
     steps:
     - uses: actions/checkout@v2    
     - name: Remove pylics own pyproject.toml
@@ -30,7 +30,7 @@ jobs:
         safe_licenses = ["Apache Software License", "MIT License", "Python Software Foundation License", "BSD License"]
         EOT
     - name: Create pyproject.toml and fill it with the necessary config (>= python 3.8)
-      if: ${{ matrix.python-version == 3.8 || matrix.python-version == 3.9 || matrix.python-version == 3.10 }}
+      if: ${{ matrix.python-version == 3.8 || matrix.python-version == 3.9 || matrix.python-version == 3.10 || matrix.python-version == 3.11 }}
       run: |
         cat <<EOT >> pyproject.toml
         [tool.pylic]
