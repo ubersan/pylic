@@ -1,9 +1,9 @@
 [tool.poetry]
 authors = ["Sandro Huber <sandrochuber@gmail.com>"]
-classifiers = ["Development Status :: 3 - Alpha"]
+classifiers = ["Development Status :: 4 - Beta"]
 description = "A Python license checker"
 homepage = "https://github.com/ubersan/pylic"
-keywords = ["cli", "license"]
+keywords = ["cli", "license", "checker"]
 license = "MIT License"
 name = "pylic"
 readme = "README.md"
@@ -11,8 +11,8 @@ repository = "https://github.com/ubersan/pylic"
 version = "3.2.0"
 
 [tool.poetry.dependencies]
-importlib-metadata = "^4.12.0"
 python = "^3.7"
+importlib-metadata = "^4.12.0"
 toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
