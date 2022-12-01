@@ -94,6 +94,7 @@ class CheckCommand(Command):
                     or (not unnecessary_unsafe_packages and extra_licenses_declared_and_allowed)
                     or (extra_licenses_declared_and_allowed and extra_packages_declared_and_allowed)
                 ):
+                    console_writer.write_all_licenses_ok()
                     return 0
 
             return 1
