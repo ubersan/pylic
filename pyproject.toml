@@ -44,6 +44,7 @@ safe_licenses = [
   "MIT License",
   "Python Software Foundation License",
   "Mozilla Public License 2.0 (MPL 2.0)",
+  "The Unlicense (Unlicense)"
 ]
 
 [tool.black]
