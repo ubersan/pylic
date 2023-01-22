@@ -3,6 +3,7 @@
 Reads pylic configuration in `pyproject.toml` and checks licenses of installed packages recursively.
 
 Principles:
+
 - Every license has to be allowed explicitly (case-insensitive comparison).
 - All installed packages without a license are considered unsafe and have to be listed as such.
 
@@ -17,6 +18,7 @@ pip install pylic
 ## Configuration
 
 `pylic` needs be run in the directory where your `pyproject.toml` file is located. You can configure
+
 - `safe_licenses`: All licenses you consider safe for usage. The string comparison is case-insensitive.
 - `unsafe_packages`: If you rely on a package that does not come with a license you have to explicitly list it as such.
 - `ignore_packages`: Packages that will not be reported as unsafe even if they use a license not listed as safe. This is useful in case an existing projects want to start integrating `pylic`, but are still using unsafe licenses. This enables first to ignore these packages temporarely, while they're being replaced, second to already validate newly added or updated packages against the safe license set and third to integrate `pylic` frictionless into CI/CD from the get go.
@@ -41,6 +43,7 @@ ignore_packages = [
 ## Commands
 
 `pylic` provides the following commands (also see `pylic help`):
+
 - `check`: Checks all installed licenses.
 - `list`: Lists all installed packages and their corresponding license.
 
@@ -121,13 +124,28 @@ Use `pylic list` to list all installed packages and their corresponding licenses
 
 In cases where the safe licenses or unsafe packages are centrally managed keeping the configuration in perfect sync to the installed packages might be too cumbersome or even impossible. To support these use cases the `check` command provides the two options (see also `check --help`) `--allow-extra-safe-licenses` and `--allow-extra-unused-packages`. These options only affect the returned status code and will keep all corresponding printed warnings unchanged.
 
+## Pre-commit
+
+`pylic` provides a [pre-commit](https://pre-commit.com/) integration. Follow the [instructions](https://pre-commit.com/#quick-start) and enable automatic license checking on commits by adding
+
+```sh
+-  repo: https://github.com/ubersan/pylic
+   rev: v<version>
+   hooks:
+   -  id: pylic
+```
+
+to your `.pre-commit-config.yaml` file.
+
 ## Development
 
 Required tools:
+
 - Poetry (https://python-poetry.org/)
 
 Run `poetry install` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `poetry run task <task>`.
 
 Creating a new release is as simple as:
+
 - Update `version` in the pyproject.toml and the `__version__.py` file.
 - `poetry run task release`.
