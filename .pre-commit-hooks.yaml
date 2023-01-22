@@ -1,0 +1,5 @@
+- id: pylic
+  name: pylic
+  entry: pylic check
+  language: python
+  pass_filenames: false
