@@ -1,38 +1,38 @@
 name: Quality checks
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
-    - name: Install poetry
-      run: pip install poetry
-    - uses: actions/cache@v3
-      with:
-        path: ~/.cache/pypoetry/virtualenvs
-        key: poetry-${{ hashFiles('poetry.lock') }}
-    - name: Install dependencies
-      run: poetry install
-    - name: Check licenses
-      run: poetry run task check_licenses
-    - name: Lint, format, sort imports & typecheck
-      run: |
-        poetry run task quality
-    - name: Run tests & generate coverage report
-      run: |
-        poetry run task test
-    - name: Upload code coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        files: ./coverage.xml
-        name: codecov-umbrella
-        fail_ci_if_error: true
-        verbose: true
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install poetry
+        run: pip install poetry
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: poetry-${{ hashFiles('poetry.lock') }}
+      - name: Install dependencies
+        run: poetry install
+      - name: Check licenses
+        run: poetry run task check_licenses
+      - name: Lint, format, sort imports & typecheck
+        run: |
+          poetry run task quality
+      - name: Run tests & generate coverage report
+        run: |
+          poetry run task test
+      - name: Upload code coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          verbose: true
