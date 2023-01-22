@@ -30,7 +30,7 @@ def read_all_installed_licenses_metadata() -> List[Dict]:
 
 
 def _read_license_from_classifier(distribution: Distribution) -> str:
-    for key, content in distribution.metadata.items():
+    for key, content in distribution.metadata.items():  # type:ignore
         if key == "Classifier":
             parts = [part.strip() for part in content.split("::")]
             if parts[0] == "License":
@@ -40,4 +40,4 @@ def _read_license_from_classifier(distribution: Distribution) -> str:
 
 
 def _read_license_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
-    return distribution.metadata.get("License", fallback)
+    return distribution.metadata.get("License", fallback)  # type:ignore
