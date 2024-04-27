@@ -1,24 +1,10 @@
 {
-    "python.venvPath": "${env:VIRTUAL_ENV}",
-    "python.pythonPath": "${env:VIRTUAL_ENV}/bin/python",
     "python.defaultInterpreterPath": "${env:VIRTUAL_ENV}/bin/python",
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        "--max-line-length=140"
-    ],
-    "python.formatting.provider": "black",
     "[python]": {
         "editor.formatOnSave": true,
     },
-    "python.linting.mypyEnabled": true,
-    "python.linting.mypyArgs": [
-        "--follow-imports=silent",
-        "--show-column-numbers",
-        "--show-error-codes"
-    ],
     "editor.codeActionsOnSave": {
-        "source.organizeImports": true
+        "source.organizeImports": "explicit"
     },
     "python.languageServer": "Pylance",
     "files.exclude": {

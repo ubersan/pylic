@@ -11,29 +11,34 @@ repository = "https://github.com/ubersan/pylic"
 version = "3.5.0"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.7.2"
 importlib-metadata = "^6.0.0"
 toml = "^0.10.2"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.10.0"
-flake8 = "^3.9.2"
-isort = "^5.10.1"
 mypy = "^0.991"
 pytest = "^7.2.0"
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.10.0"
 taskipy = "^1.10.3"
 types-toml = "^0.10.8.1"
+ruff = "^0.4.2"
+pytest-only = "^2.1.1"
 
 [tool.poetry.scripts]
 pylic = 'pylic.cli.app:main'
 
 [tool.taskipy.tasks]
-check_licenses = "python -m pylic check"
-get_current_version = "echo -n v$(sed '11q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"
-quality = "black . && flake8 --max-line-length 140 --count . && isort . && mypy ."
-release = " git tag $(task get_current_version) && git push origin $(task get_current_version)"
+check-format = "echo 'Checking formatting ...' && ruff fomrat --diff --quiet ."
+fix-format = "echo 'Fixing formatting ...' && ruff format ."
+check-lint = "echo 'Checking linting ...' && ruff check --quiet ."
+fix-lint = "echo 'Fixing linting ...' && ruff check --fix ."
+check-types = "echo 'Checking types ...' && mypy --pretty --no-error-summary ."
+check-licenses = "echo 'Checking licenses ...' && python -m pylic check"
+check-all = "task check-format && task check-lint && task check-types && task check-licenses && echo ✅"
+fix-all = "task fix-format ; task fix-lint"
+get-current-version = "echo -n v$(sed '11q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"
+release = " git tag $(task get-current-version) && git push origin $(task get-current-version)"
 test = "pytest --cov=./ --cov-report=xml"
 
 [tool.pylic]
@@ -41,20 +46,20 @@ safe_licenses = [
   "BSD License",
   "Apache Software License",
   "MIT License",
-  "Python Software Foundation License",
-  "Mozilla Public License 2.0 (MPL 2.0)",
+  "Python Software Foundation License"
 ]
 
-[tool.black]
-line_length = 140
+[tool.ruff]
+line-length = 140
 
-[tool.isort]
-ensure_newline_before_comments = "True"
-force_grid_wrap = 0
-include_trailing_comma = "True"
-line_length = 140
-multi_line_output = 3
-use_parentheses = "True"
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
 
 [tool.coverage.report]
 exclude_lines = [
