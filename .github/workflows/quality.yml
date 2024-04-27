@@ -30,7 +30,7 @@ jobs:
         run: |
           poetry run task test
       - name: Upload code coverage to Codecov
-        uses: decov/codecov-action@v4
+        uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           name: codecov-umbrella
