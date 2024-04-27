@@ -60,30 +60,24 @@ class CheckCommand(Command):
                 console_writer.line("Found unsafe packages with a known license. Instead allow these licenses explicitly:")
                 for bad_package in bad_unsafe_packages:
                     console_writer.line(
-                        
-                            f"  {WARNING}{bad_package['package']}{END_STYLE} {LABEL}({bad_package['version']}{END_STYLE}): "
-                            f"{BLUE}{bad_package['license']}{END_STYLE}"
-                        
+                        f"  {WARNING}{bad_package['package']}{END_STYLE} {LABEL}({bad_package['version']}{END_STYLE}): "
+                        f"{BLUE}{bad_package['license']}{END_STYLE}"
                     )
 
             if len(missing_unsafe_packages) > 0:
                 console_writer.line("Found unsafe packages:")
                 for missing_unsafe_package in missing_unsafe_packages:
                     console_writer.line(
-                        
-                            f"  {WARNING}{missing_unsafe_package['package']}{END_STYLE} "
-                            f"{LABEL}({missing_unsafe_package['version']}){END_STYLE}"
-                        
+                        f"  {WARNING}{missing_unsafe_package['package']}{END_STYLE} "
+                        f"{LABEL}({missing_unsafe_package['version']}){END_STYLE}"
                     )
 
             if len(unsafe_licenses.found) > 0:
                 console_writer.line("Found unsafe licenses:")
                 for bad_license in unsafe_licenses.found:
                     console_writer.line(
-                        
-                            f"  {BLUE}{bad_license['package']}{END_STYLE} {LABEL}({bad_license['version']}){END_STYLE}: "
-                            f"{WARNING}{bad_license['license']}{END_STYLE}"
-                        
+                        f"  {BLUE}{bad_license['package']}{END_STYLE} {LABEL}({bad_license['version']}){END_STYLE}: "
+                        f"{WARNING}{bad_license['license']}{END_STYLE}"
                     )
 
             if not all([unnecessary_ignore_packages, bad_unsafe_packages, missing_unsafe_packages, unsafe_licenses.found]):
@@ -103,10 +97,8 @@ class CheckCommand(Command):
             console_writer.line("Ignored packages with unsafe licenses:")
             for bad_license in unsafe_licenses.ignored:
                 console_writer.line(
-                    
-                        f"  {BLUE}{bad_license['package']}{END_STYLE} {LABEL}({bad_license['version']}){END_STYLE}: "
-                        f"{WARNING}{bad_license['license']}{END_STYLE}"
-                    
+                    f"  {BLUE}{bad_license['package']}{END_STYLE} {LABEL}({bad_license['version']}){END_STYLE}: "
+                    f"{WARNING}{bad_license['license']}{END_STYLE}"
                 )
 
         console_writer.write_all_licenses_ok()

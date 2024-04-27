@@ -3,7 +3,6 @@ safe_licenses = [
     "BSD License",
     "Apache Software License",
     "MIT License",
-    "Python Software Foundation License",
-    "Mozilla Public License 2.0 (MPL 2.0)"
+    "Python Software Foundation License"
 ]
 unsafe_packages = ["not-installed"]
