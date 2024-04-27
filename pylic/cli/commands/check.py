@@ -104,7 +104,7 @@ class CheckCommand(Command):
 
         if 'quiet' not in options:
             console_writer.write_all_licenses_ok()
-            
+
         return 0
 
     def _show_help(self) -> None:
@@ -112,6 +112,7 @@ class CheckCommand(Command):
         console_writer.line(f"  {UNDERLINE}pylic{END_STYLE} {UNDERLINE}check{END_STYLE} [-h] [-l] [-p]\n")
         console_writer.line(f"{BOLD}OPTIONS{END_STYLE}")
         console_writer.line(f"  {LABEL}-h{END_STYLE} (--help)\t\t\t\tDisplay this help message")
+        console_writer.line(f"  {LABEL}-q{END_STYLE} (--quiet)\t\t\t\tNo output except for errors")
         console_writer.line(f"  {LABEL}-l{END_STYLE} (--allow-extra-safe-licenses)\tAllow to list extra safe licenses")
         console_writer.line(f"  {LABEL}-p{END_STYLE} (--allow-extra-unused-packages)\tAllow to list extra unused packages\n")
         console_writer.line(f"{BOLD}DESCRIPTION{END_STYLE}")
