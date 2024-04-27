@@ -12,6 +12,7 @@ class CheckCommand(Command):
     option_targets_to_token = [
         TargetsToToken(targets=["--allow-extra-unused-packages", "-p"], token="allow_extra_packages"),
         TargetsToToken(targets=["--allow-extra-safe-licenses", "-l"], token="allow_extra_licenses"),
+        TargetsToToken(targets=["--quiet", "-q"], token="quiet"),
         TargetsToToken(targets=["--help", "-h"], token="help"),
     ]
 
@@ -101,7 +102,9 @@ class CheckCommand(Command):
                     f"{WARNING}{bad_license['license']}{END_STYLE}"
                 )
 
-        console_writer.write_all_licenses_ok()
+        if 'quiet' not in options:
+            console_writer.write_all_licenses_ok()
+            
         return 0
 
     def _show_help(self) -> None:

@@ -29,6 +29,18 @@ def test_check_with_a_valid_config_yields_successful_output_and_return_code(mock
         # assert app.io.fetch_output() == "All licenses ok\n"
         assert system_exit.code == 0
 
+def test_check_with_a_valid_config_and_quiet_option_runs_fine(mocker: MockerFixture) -> None:
+    read_pyproject_file(mocker, "tests/integration_tests/test_tomls/valid.toml")
+    sys.argv.clear()
+    sys.argv.append("pylic")
+    sys.argv.append("check")
+    sys.argv.append("--quiet")
+
+    try:
+        app()
+    except SystemExit as system_exit:
+        assert system_exit.code == 0
+
 
 def test_correct_error_is_returned_when_an_unnecessary_unsafe_package_is_listed(mocker: MockerFixture) -> None:
     read_pyproject_file(mocker, "tests/integration_tests/test_tomls/unnecessary_unsafe_package.toml")
