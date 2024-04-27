@@ -10,14 +10,7 @@ from pylic.cli.console_reader import ConsoleReader
 def main() -> None:
     sys.argv.pop(0)
 
-    program = ConsoleReader(
-        commands=[
-            CheckCommand(),
-            ListCommand(),
-            HelpCommand(),
-            VersionCommand(),
-        ]
-    ).get_program(sys.argv)
+    program = ConsoleReader(commands=[CheckCommand(), ListCommand(), HelpCommand(), VersionCommand()]).get_program(sys.argv)
 
     status_code = program.command.handle(program.options)
     exit(status_code)

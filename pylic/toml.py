@@ -22,15 +22,11 @@ def read_config(filename: str = "pyproject.toml") -> AppConfig:
     unsafe_packages: List[str] = pylic_config.get("unsafe_packages", [])
     ignore_packages: List[str] = pylic_config.get("ignore_packages", [])
 
-    return AppConfig(
-        safe_licenses=safe_licenses,
-        unsafe_packages=unsafe_packages,
-        ignore_packages=ignore_packages,
-    )
+    return AppConfig(safe_licenses=safe_licenses, unsafe_packages=unsafe_packages, ignore_packages=ignore_packages)
 
 
 def _read_pyproject_file(filename: str) -> MutableMapping[str, Any]:
-    with open(filename, "r") as pyproject_file:
+    with open(filename) as pyproject_file:
         try:
             return toml.load(pyproject_file)
         except Exception as exception:

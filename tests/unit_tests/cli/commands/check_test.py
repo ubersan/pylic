@@ -38,10 +38,7 @@ def test_check_is_valid_if_no_packages_are_installed_and_config_is_empty(check_c
 
 
 def test_check_yields_correct_unnecessary_safe_licenses_and_status_code_is_1(
-    check_command: CheckCommand,
-    license: str,
-    console_writer: MagicMock,
-    read_config: MagicMock,
+    check_command: CheckCommand, license: str, console_writer: MagicMock, read_config: MagicMock
 ) -> None:
     safe_licenses = [f"{license}1", f"{license}2"]
     read_config.return_value = AppConfig(safe_licenses, [], [])
@@ -54,10 +51,7 @@ def test_check_yields_correct_unnecessary_safe_licenses_and_status_code_is_1(
 
 
 def test_check_yields_correct_unnecessary_safe_licenses_warnings_but_status_code_is_0_if_correct_option_is_set(
-    check_command: CheckCommand,
-    license: str,
-    console_writer: MagicMock,
-    read_config: MagicMock,
+    check_command: CheckCommand, license: str, console_writer: MagicMock, read_config: MagicMock
 ) -> None:
     safe_licenses = [f"{license}1", f"{license}2"]
     read_config.return_value = AppConfig(safe_licenses, [], [])
@@ -70,10 +64,7 @@ def test_check_yields_correct_unnecessary_safe_licenses_warnings_but_status_code
 
 
 def test_check_yields_correct_unnecessary_safe_licenses_warnings_but_status_code_is_1_if_wrong_option_is_set(
-    check_command: CheckCommand,
-    license: str,
-    console_writer: MagicMock,
-    read_config: MagicMock,
+    check_command: CheckCommand, license: str, console_writer: MagicMock, read_config: MagicMock
 ) -> None:
     safe_licenses = [f"{license}1", f"{license}2"]
     read_config.return_value = AppConfig(safe_licenses, [], [])
@@ -87,11 +78,7 @@ def test_check_yields_correct_unnecessary_safe_licenses_warnings_but_status_code
 
 @pytest.mark.parametrize("package_ignored", [True, False])
 def test_check_yields_correct_unnecessary_unsafe_packages_and_status_code_is_1(
-    check_command: CheckCommand,
-    package: str,
-    console_writer: MagicMock,
-    package_ignored: bool,
-    read_config: MagicMock,
+    check_command: CheckCommand, package: str, console_writer: MagicMock, package_ignored: bool, read_config: MagicMock
 ) -> None:
     unsafe_packages = [f"{package}1", f"{package}2"]
     ignore_packages = [unsafe_packages[0]] if package_ignored else []
@@ -106,11 +93,7 @@ def test_check_yields_correct_unnecessary_unsafe_packages_and_status_code_is_1(
 
 @pytest.mark.parametrize("package_ignored", [True, False])
 def test_check_yields_correct_unnecessary_unsafe_packages_but_status_code_is_0_if_correct_option_is_set(
-    check_command: CheckCommand,
-    package: str,
-    console_writer: MagicMock,
-    package_ignored: bool,
-    read_config: MagicMock,
+    check_command: CheckCommand, package: str, console_writer: MagicMock, package_ignored: bool, read_config: MagicMock
 ) -> None:
     unsafe_packages = [f"{package}1", f"{package}2"]
     ignore_packages = [unsafe_packages[0]] if package_ignored else []
@@ -125,11 +108,7 @@ def test_check_yields_correct_unnecessary_unsafe_packages_but_status_code_is_0_i
 
 @pytest.mark.parametrize("package_ignored", [True, False])
 def test_check_yields_correct_unnecessary_unsafe_packages_but_status_code_is_1_if_wrong_option_is_set(
-    check_command: CheckCommand,
-    package: str,
-    console_writer: MagicMock,
-    package_ignored: bool,
-    read_config: MagicMock,
+    check_command: CheckCommand, package: str, console_writer: MagicMock, package_ignored: bool, read_config: MagicMock
 ) -> None:
     unsafe_packages = [f"{package}1", f"{package}2"]
     ignore_packages = [unsafe_packages[0]] if package_ignored else []
@@ -144,11 +123,7 @@ def test_check_yields_correct_unnecessary_unsafe_packages_but_status_code_is_1_i
 
 @pytest.mark.parametrize("package_ignored", [True, False])
 def test_check_yields_correct_unnecessary_unsafe_packages_and_safe_licenses_but_status_code_is_0_if_correct_options_are_set(
-    check_command: CheckCommand,
-    package: str,
-    console_writer: MagicMock,
-    package_ignored: bool,
-    read_config: MagicMock,
+    check_command: CheckCommand, package: str, console_writer: MagicMock, package_ignored: bool, read_config: MagicMock
 ) -> None:
     safe_licenses = [f"{license}1", f"{license}2"]
     unsafe_packages = [f"{package}1", f"{package}2"]
@@ -166,10 +141,7 @@ def test_check_yields_correct_unnecessary_unsafe_packages_and_safe_licenses_but_
 
 
 def test_check_yields_correct_unnecessary_ignore_packages(
-    check_command: CheckCommand,
-    package: str,
-    console_writer: MagicMock,
-    read_config: MagicMock,
+    check_command: CheckCommand, package: str, console_writer: MagicMock, read_config: MagicMock
 ) -> None:
     ignore_packages = [f"{package}1", f"{package}2"]
     read_config.return_value = AppConfig([], [], ignore_packages)

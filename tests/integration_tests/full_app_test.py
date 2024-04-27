@@ -11,7 +11,7 @@ from pylic.cli.app import main as app
 
 
 def read_pyproject_file(mocker: MockerFixture, filename: str) -> None:
-    with open(filename, "r") as pyproject_test_file:
+    with open(filename) as pyproject_test_file:
         mocker.patch("builtins.open", mocker.mock_open(read_data=pyproject_test_file.read()))
 
 

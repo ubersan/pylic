@@ -47,8 +47,7 @@ class ConsoleReader:
         if len(sanitized_inputs) > 0 and command.option_targets_to_token is not None:
             for option_target in sanitized_inputs[1:]:
                 option_targets_to_token = next(
-                    filter(lambda targets_to_token: option_target in targets_to_token.targets, command.option_targets_to_token),
-                    None,
+                    filter(lambda targets_to_token: option_target in targets_to_token.targets, command.option_targets_to_token), None
                 )
                 if option_targets_to_token is None:
                     console_writer.write_no_such_option_for_command(option_target, command.targets_to_token.token)

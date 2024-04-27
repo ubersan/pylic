@@ -9,9 +9,7 @@ def test_no_unncessary_licenses_found_if_no_safe_nor_installed_licenses_present(
 
 
 def test_no_unncessary_licenses_found_if_no_safe_licenses_provided(license: str) -> None:
-    checker = LicenseChecker(
-        installed_licenses=[{"license": f"{license}1"}, {"license": f"{license}2"}],
-    )
+    checker = LicenseChecker(installed_licenses=[{"license": f"{license}1"}, {"license": f"{license}2"}])
     unnecessary_safe_licenses = checker.get_unnecessary_safe_licenses()
     assert len(unnecessary_safe_licenses) == 0
 
@@ -68,10 +66,7 @@ def test_no_bad_unsafe_packages_if_no_unsafe_packages_are_provided_or_installed_
 
 def test_no_bad_unsafe_packages_if_no_unsafe_packages_are_provided(package: str, license: str) -> None:
     checker = LicenseChecker(
-        installed_licenses=[
-            {"package": f"{package}1", "license": f"{license}1"},
-            {"package": f"{package}2", "license": f"{license}2"},
-        ]
+        installed_licenses=[{"package": f"{package}1", "license": f"{license}1"}, {"package": f"{package}2", "license": f"{license}2"}]
     )
     bad_unsafe_packages = checker.get_bad_unsafe_packages()
     assert len(bad_unsafe_packages) == 0
@@ -80,10 +75,7 @@ def test_no_bad_unsafe_packages_if_no_unsafe_packages_are_provided(package: str,
 def test_no_bad_unsafe_packages_if_all_licenses_of_unsafe_packages_come_with_unknown_license(package: str, version: str) -> None:
     checker = LicenseChecker(
         AppConfig(unsafe_packages=[f"{package}1", f"{package}2"]),
-        installed_licenses=[
-            {"package": f"{package}1", "license": "unknown"},
-            {"package": f"{package}2", "license": "unknown"},
-        ],
+        installed_licenses=[{"package": f"{package}1", "license": "unknown"}, {"package": f"{package}2", "license": "unknown"}],
     )
     bad_unsafe_packages = checker.get_bad_unsafe_packages()
     assert len(bad_unsafe_packages) == 0
@@ -93,10 +85,7 @@ def test_correct_bad_unsafe_packages_found(package: str, version: str) -> None:
     known_license = {"package": f"{package}1", "license": "not-uknown", "version": version}
     checker = LicenseChecker(
         AppConfig(unsafe_packages=[f"{package}1", f"{package}2"]),
-        installed_licenses=[
-            known_license,
-            {"package": f"{package}2", "license": "unknown"},
-        ],
+        installed_licenses=[known_license, {"package": f"{package}2", "license": "unknown"}],
     )
     bad_unsafe_packages = checker.get_bad_unsafe_packages()
     assert len(bad_unsafe_packages) == 1
@@ -112,10 +101,7 @@ def test_no_missing_unsafe_packages_if_no_unsafe_packages_are_provided_or_instal
 def test_no_missing_unsafe_packages_if_corresponding_unsafe_packages_are_provided(package: str) -> None:
     checker = LicenseChecker(
         AppConfig(unsafe_packages=[f"{package}1", f"{package}2"]),
-        installed_licenses=[
-            {"package": f"{package}1", "license": "unknown"},
-            {"package": f"{package}2", "license": "unknown"},
-        ],
+        installed_licenses=[{"package": f"{package}1", "license": "unknown"}, {"package": f"{package}2", "license": "unknown"}],
     )
     missing_unsafe_packages = checker.get_missing_unsafe_packages()
     assert len(missing_unsafe_packages) == 0
@@ -123,10 +109,7 @@ def test_no_missing_unsafe_packages_if_corresponding_unsafe_packages_are_provide
 
 def test_no_missing_unsafe_packages_if_unsafe_packages_are_missing_but_licenses_are_known(package: str) -> None:
     checker = LicenseChecker(
-        installed_licenses=[
-            {"package": f"{package}1", "license": "not-unknown"},
-            {"package": f"{package}2", "license": "also-not-unknown"},
-        ],
+        installed_licenses=[{"package": f"{package}1", "license": "not-unknown"}, {"package": f"{package}2", "license": "also-not-unknown"}]
     )
     missing_unsafe_packages = checker.get_missing_unsafe_packages()
     assert len(missing_unsafe_packages) == 0
@@ -179,10 +162,7 @@ def test_correct_unsafe_licenses_are_found(package: str, license: str, version: 
     ]
     checker = LicenseChecker(
         AppConfig(safe_licenses=[f"{license}2"]),
-        installed_licenses=[
-            *bad_licenses,
-            {"license": f"{license}2", "package": package, "version": f"{version}2"},
-        ],
+        installed_licenses=[*bad_licenses, {"license": f"{license}2", "package": package, "version": f"{version}2"}],
     )
     unsafe_licenses = checker.get_unsafe_licenses()
     assert len(unsafe_licenses.found) == 3
@@ -198,10 +178,7 @@ def test_correct_unsafe_licenses_are_found_when_packages_ignored(package: str, l
     ignore_packages = [f"{package}1"]
     checker = LicenseChecker(
         AppConfig(safe_licenses=[f"{license}2"], ignore_packages=ignore_packages),
-        installed_licenses=[
-            *bad_licenses,
-            {"license": f"{license}2", "package": package, "version": f"{version}2"},
-        ],
+        installed_licenses=[*bad_licenses, {"license": f"{license}2", "package": package, "version": f"{version}2"}],
     )
     unsafe_licenses = checker.get_unsafe_licenses()
     assert len(unsafe_licenses.found) == 2

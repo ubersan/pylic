@@ -103,11 +103,7 @@ def test_osi_approved_license_is_returned_if_osi_approved_classifier_and_no_spec
     mocker: MockerFixture, license: str, package: str, version: str
 ) -> None:
     distribution = mocker.MagicMock()
-    distribution.metadata = {
-        "Classifier": "License :: OSI Approved",
-        "Name": package,
-        "Version": version,
-    }
+    distribution.metadata = {"Classifier": "License :: OSI Approved", "Name": package, "Version": version}
 
     mock = mocker.patch("pylic.licenses.distributions")
     mock.return_value = [distribution]
@@ -121,12 +117,7 @@ def test_specific_license_is_returned_if_only_general_osi_approved_classifier_is
     mocker: MockerFixture, license: str, package: str, version: str
 ) -> None:
     distribution = mocker.MagicMock()
-    distribution.metadata = {
-        "Classifier": "License :: OSI Approved",
-        "Name": package,
-        "License": license,
-        "Version": version,
-    }
+    distribution.metadata = {"Classifier": "License :: OSI Approved", "Name": package, "License": license, "Version": version}
 
     mock = mocker.patch("pylic.licenses.distributions")
     mock.return_value = [distribution]

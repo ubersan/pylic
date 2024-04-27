@@ -11,11 +11,7 @@ class UnsafeLicenses:
 
 
 class LicenseChecker:
-    def __init__(
-        self,
-        config: Optional[AppConfig] = None,
-        installed_licenses: Optional[List[Dict]] = None,
-    ) -> None:
+    def __init__(self, config: Optional[AppConfig] = None, installed_licenses: Optional[List[Dict]] = None) -> None:
         self.config = config or AppConfig()
         self.installed_licenses = installed_licenses or []
 

@@ -19,11 +19,7 @@ def read_all_installed_licenses_metadata() -> List[Dict]:
             license_string = _read_license_from_metadata(distribution, fallback="OSI Approved")
 
         installed_licenses.append(
-            {
-                "license": license_string,
-                "package": distribution.metadata["Name"],
-                "version": distribution.metadata["Version"],
-            }
+            {"license": license_string, "package": distribution.metadata["Name"], "version": distribution.metadata["Version"]}
         )
 
     return installed_licenses
