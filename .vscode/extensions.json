@@ -3,6 +3,6 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "visualstudioexptteam.vscodeintellicode",
-        "bungcip.better-toml"
+        "tamasfe.even-better-toml"
     ]
 }
