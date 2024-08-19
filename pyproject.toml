@@ -29,7 +29,7 @@ pytest-only = "^2.1.1"
 pylic = 'pylic.cli.app:main'
 
 [tool.taskipy.tasks]
-check-format = "echo 'Checking formatting ...' && ruff fomrat --diff --quiet ."
+check-format = "echo 'Checking formatting ...' && ruff format --diff --quiet ."
 fix-format = "echo 'Fixing formatting ...' && ruff format ."
 check-lint = "echo 'Checking linting ...' && ruff check --quiet ."
 fix-lint = "echo 'Fixing linting ...' && ruff check --fix ."

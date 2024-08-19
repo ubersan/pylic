@@ -29,6 +29,7 @@ def test_check_with_a_valid_config_yields_successful_output_and_return_code(mock
         # assert app.io.fetch_output() == "All licenses ok\n"
         assert system_exit.code == 0
 
+
 def test_check_with_a_valid_config_and_quiet_option_runs_fine(mocker: MockerFixture) -> None:
     read_pyproject_file(mocker, "tests/integration_tests/test_tomls/valid.toml")
     sys.argv.clear()
