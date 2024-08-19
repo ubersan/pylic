@@ -102,7 +102,7 @@ class CheckCommand(Command):
                     f"{WARNING}{bad_license['license']}{END_STYLE}"
                 )
 
-        if 'quiet' not in options:
+        if "quiet" not in options:
             console_writer.write_all_licenses_ok()
 
         return 0
