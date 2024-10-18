@@ -1,10 +1,5 @@
-import sys
+from importlib.metadata import Distribution, distributions
 from typing import Dict, List
-
-if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
-    from importlib.metadata import Distribution, distributions
-else:
-    from importlib_metadata import Distribution, distributions
 
 
 def read_all_installed_licenses_metadata() -> List[Dict]:
