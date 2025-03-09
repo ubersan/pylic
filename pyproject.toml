@@ -8,7 +8,7 @@ license = "MIT License"
 name = "pylic"
 readme = "README.md"
 repository = "https://github.com/ubersan/pylic"
-version = "4.0.0"
+version = "4.1.0"
 
 [tool.poetry.dependencies]
 python = "^3.9"
