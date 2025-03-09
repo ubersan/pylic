@@ -1,11 +1,10 @@
 from importlib.metadata import Distribution, distributions
-from typing import Dict, List
 
 
-def read_all_installed_licenses_metadata() -> List[Dict]:
+def read_all_installed_licenses_metadata() -> list[dict]:
     installed_distributions = distributions()
 
-    installed_licenses: List[Dict] = []
+    installed_licenses: list[dict] = []
     for distribution in installed_distributions:
         license_string = _read_license_expression_from_metadata(distribution)
 
@@ -17,7 +16,11 @@ def read_all_installed_licenses_metadata() -> List[Dict]:
             license_string = _read_license_from_metadata(distribution, fallback="OSI Approved")
 
         installed_licenses.append(
-            {"license": license_string, "package": distribution.metadata["Name"], "version": distribution.metadata["Version"]}
+            {
+                "license": license_string,
+                "package": distribution.metadata["Name"],
+                "version": distribution.metadata["Version"],
+            }
         )
 
     return installed_licenses

@@ -141,9 +141,9 @@ to your `.pre-commit-config.yaml` file.
 
 Required tools:
 
-- Poetry (https://python-poetry.org/)
+- uv (https://docs.astral.sh/uv/)
 
-Run `poetry install` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `poetry run task <task>`.
+Run `uv sync` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `poetry run task <task>`.
 
 Creating a new release is as simple as:
 
