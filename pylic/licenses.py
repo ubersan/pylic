@@ -7,7 +7,10 @@ def read_all_installed_licenses_metadata() -> List[Dict]:
 
     installed_licenses: List[Dict] = []
     for distribution in installed_distributions:
-        license_string = _read_license_from_classifier(distribution)
+        license_string = _read_license_expression_from_metadata(distribution)
+
+        if license_string == "unknown":
+            license_string = _read_license_from_classifier(distribution)
         if license_string == "unknown":
             license_string = _read_license_from_metadata(distribution)
         if license_string == "OSI Approved":
@@ -31,4 +34,8 @@ def _read_license_from_classifier(distribution: Distribution) -> str:
 
 
 def _read_license_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
-    return distribution.metadata.get("License", fallback)  # type:ignore
+    return distribution.metadata.get("License", fallback)  # type:ignore[no-any-return,attr-defined]
+
+
+def _read_license_expression_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
+    return distribution.metadata.get("License-Expression", fallback)  # type:ignore[no-any-return,attr-defined]

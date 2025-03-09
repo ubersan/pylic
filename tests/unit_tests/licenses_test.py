@@ -3,7 +3,12 @@ import random
 import pytest
 from pytest_mock import MockerFixture
 
-from pylic.licenses import _read_license_from_classifier, _read_license_from_metadata, read_all_installed_licenses_metadata
+from pylic.licenses import (
+    _read_license_expression_from_metadata,
+    _read_license_from_classifier,
+    _read_license_from_metadata,
+    read_all_installed_licenses_metadata,
+)
 from tests.unit_tests.conftest import random_string
 
 
@@ -41,6 +46,13 @@ def test_reading_license_from_metadata_yields_correct_license(mocker: MockerFixt
     assert read_license == license
 
 
+def test_reading_license_expression_from_metadata_yields_correct_license(mocker: MockerFixture, license: str) -> None:
+    distribution = mocker.MagicMock()
+    distribution.metadata = {"License-Expression": license}
+    read_license = _read_license_expression_from_metadata(distribution)
+    assert read_license == license
+
+
 def test_reading_license_from_metadata_without_license_entry_yields_unknown_license(mocker: MockerFixture) -> None:
     distribution = mocker.MagicMock()
     distribution.metadata = {"Classifier": "Development Status :: 3 - Alpha"}
@@ -60,8 +72,9 @@ def test_reading_all_installed_license_metadata_return_correct_result(
 ) -> None:
     distribution1 = mocker.MagicMock()
     distribution1.metadata = {
-        "Classifier": f"License :: {license}1",
+        "Classifier": f"License :: {license}",
         "Name": f"{package}1",
+        "License-Expression": f"{license}1",
         "License": "do_not_use_this1",
         "Version": f"{version}1",
     }
@@ -72,14 +85,17 @@ def test_reading_all_installed_license_metadata_return_correct_result(
         "License": "do_not_use_this2",
         "Version": f"{version}2",
     }
+    distribution3 = mocker.MagicMock()
+    distribution3.metadata = {"Name": f"{package}3", "License": f"{license}3", "Version": f"{version}3"}
 
     mock = mocker.patch("pylic.licenses.distributions")
-    mock.return_value = [distribution1, distribution2]
+    mock.return_value = [distribution1, distribution2, distribution3]
     installed_licenses = read_all_installed_licenses_metadata()
 
-    assert len(installed_licenses) == 2
+    assert len(installed_licenses) == 3
     assert installed_licenses[0] == {"license": f"{license}1", "package": f"{package}1", "version": f"{version}1"}
     assert installed_licenses[1] == {"license": f"{license}2", "package": f"{package}2", "version": f"{version}2"}
+    assert installed_licenses[2] == {"license": f"{license}3", "package": f"{package}3", "version": f"{version}3"}
 
 
 def test_correct_license_metadata_is_returned_if_no_classifiers_are_present(
