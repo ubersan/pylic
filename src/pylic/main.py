@@ -85,7 +85,13 @@ def check(quiet: bool = False, allow_extra_packages: bool = False, allow_extra_l
 
 @app.command()
 def list() -> None:
-    print("list")
+    installed_licenses = read_all_installed_licenses_metadata()
+    unsorted = {
+        installed["package"]: {"version": installed["version"], "license": installed["license"]}
+        for installed in installed_licenses
+    }
+    for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
+        print(f"{package} ({rest['version']}): {rest['license']}")
 
 
 @app.command()
