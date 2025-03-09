@@ -69,8 +69,7 @@ class CheckCommand(Command):
                 console_writer.line("Found unsafe packages:")
                 for missing_unsafe_package in missing_unsafe_packages:
                     console_writer.line(
-                        f"  {WARNING}{missing_unsafe_package['package']}{END_STYLE} "
-                        f"{LABEL}({missing_unsafe_package['version']}){END_STYLE}"
+                        f"  {WARNING}{missing_unsafe_package['package']}{END_STYLE} {LABEL}({missing_unsafe_package['version']}){END_STYLE}"
                     )
 
             if len(unsafe_licenses.found) > 0:

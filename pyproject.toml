@@ -1,74 +1,40 @@
-[tool.poetry]
-authors = ["Sandro Huber <sandrochuber@gmail.com>"]
-classifiers = ["Development Status :: 4 - Beta"]
-description = "A Python license checker"
-homepage = "https://github.com/ubersan/pylic"
-keywords = ["cli", "license", "checker"]
-license = "MIT License"
+[project]
 name = "pylic"
+version = "5.0.0"
+description = "A Python license checker"
 readme = "README.md"
-repository = "https://github.com/ubersan/pylic"
-version = "4.1.0"
+authors = [
+    { name = "Sandro Huber", email = "sandrochuber@gmail.com" }
+]
+keywords = ["cli", "license", "checker"]
+license = "MIT"
+requires-python = ">=3.9"
+dependencies = [
+    "toml>=0.10.2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-toml = "^0.10.2"
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+    "ruff>=0.9.10",
+    "taskipy>=1.14.1",
+]
 
-[tool.poetry.group.dev.dependencies]
-mypy = "^0.991"
-pytest = "^7.2.0"
-pytest-cov = "^4.0.0"
-pytest-mock = "^3.10.0"
-taskipy = "^1.10.3"
-types-toml = "^0.10.8.1"
-ruff = "^0.4.2"
-pytest-only = "^2.1.1"
-setuptools = "^75.9.1"
-
-[tool.poetry.scripts]
-pylic = 'pylic.cli.app:main'
-
-[tool.taskipy.tasks]
-check-format = "echo 'Checking formatting ...' && ruff format --diff --quiet ."
-fix-format = "echo 'Fixing formatting ...' && ruff format ."
-check-lint = "echo 'Checking linting ...' && ruff check --quiet ."
-fix-lint = "echo 'Fixing linting ...' && ruff check --fix ."
-check-types = "echo 'Checking types ...' && mypy --pretty --no-error-summary ."
-check-licenses = "echo 'Checking licenses ...' && python -m pylic check --quiet"
-check-all = "task check-format && task check-lint && task check-types && task check-licenses && echo ✅"
-fix-all = "task fix-format ; task fix-lint"
-get-current-version = "echo v$(sed '11q;d' pyproject.toml | awk '{print $3}' | cut -c 2- | rev | cut -c 2- | rev)"
-release = "git tag $(task get-current-version) && git push origin $(task get-current-version)"
-test = "pytest --cov=./ --cov-report=xml"
+[project.scripts]
+pylic = "pylic.cli.app:main"
 
 [tool.pylic]
 safe_licenses = [
-  "BSD License",
-  "Apache Software License",
-  "MIT",
-  "MIT License",
-  "Python Software Foundation License"
+    "Apache Software License",
+    "BSD License",
+    "MIT",
+    "MIT License",
+    "Python Software Foundation License"
 ]
 
 [tool.ruff]
 line-length = 140
-
-[tool.ruff.format]
-skip-magic-trailing-comma = true
-
-[tool.ruff.lint]
-select = ["E", "F", "UP", "B", "SIM", "I"]
-
-[tool.ruff.lint.isort]
-split-on-trailing-comma = false
-
-[tool.coverage.report]
-exclude_lines = [
-  "if __name__ == .__main__.:",
-  "from importlib_metadata import Distribution, distributions", # tested by integration tests
-  "app.run()", # tested by integration tests
-  "pragma: no cover",
-]
 
 [tool.mypy]
 check_untyped_defs = true
@@ -78,7 +44,6 @@ disallow_untyped_calls = true
 disallow_untyped_decorators = true
 disallow_untyped_defs = true
 explicit_package_bases = true
-files = ["pylic", "tests"]
 namespace_packages = true
 no_implicit_optional = true
 pretty = true
@@ -92,6 +57,16 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
+[tool.taskipy.tasks]
+check-format = "echo 'Checking formatting ...' && ruff format --diff --quiet ."
+check-lint = "echo 'Checking linting ...' && ruff check --quiet ."
+check-types = "echo 'Checking types ...' && mypy --pretty --no-error-summary ."
+check-licenses = "echo 'Checking licenses ...' && python -m pylic check --quiet"
+check = "task check-format && task check-lint && task check-types && task check-licenses && echo ✅"
+fix-format = "echo 'Fixing formatting ...' && ruff format ."
+fix-lint = "echo 'Fixing linting ...' && ruff check --fix ."
+fix = "task fix-format ; task fix-lint"
+
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
