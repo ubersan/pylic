@@ -8,7 +8,7 @@ from pylic.licenses import read_all_installed_licenses_metadata
 app = typer.Typer(no_args_is_help=True)
 
 
-@app.command()
+@app.command(help="Checks all installed licenses against the configuaration provided in [tool.pylic].")
 def check(quiet: bool = False, allow_extra_packages: bool = False, allow_extra_licenses: bool = False) -> None:
     config = read_config()
     installed_licenses = read_all_installed_licenses_metadata()
@@ -83,7 +83,7 @@ def check(quiet: bool = False, allow_extra_packages: bool = False, allow_extra_l
         print("✨ All licenses ok ✨")
 
 
-@app.command()
+@app.command(help="Lists all installed packages and their corresponding license.")
 def list() -> None:
     installed_licenses = read_all_installed_licenses_metadata()
     unsorted = {
@@ -94,7 +94,7 @@ def list() -> None:
         print(f"{package} ({rest['version']}): {rest['license']}")
 
 
-@app.command()
+@app.command(help="Prints the version of pylic.")
 def version() -> None:
     print(__version)
 
