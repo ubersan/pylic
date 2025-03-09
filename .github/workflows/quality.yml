@@ -9,31 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.10
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
-      - name: Install poetry
-        run: pip install poetry
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: poetry-${{ hashFiles('poetry.lock') }}
-      - name: Install dependencies
-        run: poetry install
-      - name: Check licenses
-        run: poetry run task check-licenses
-      - name: Lint, format, sort imports & typecheck
-        run: |
-          poetry run task check-all
-      - name: Run tests & generate coverage report
-        run: |
-          poetry run task test
-      - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage.xml
-          name: codecov-umbrella
-          fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
+          python-version-file: ".python-version"
+      - name: Install the project
+        run: uv sync --all-extras --dev
+      - name: Run all quality checks
+        run: uv run task check

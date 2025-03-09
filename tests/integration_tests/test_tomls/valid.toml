@@ -1,9 +1,0 @@
-[tool.pylic]
-safe_licenses = [
-    "BSD License",
-    "Apache Software License",
-    "MIT",
-    "MIT License",
-    "Python Software Foundation License",
-    "GNU Lesser General Public License v3 (LGPLv3)"
-]
