@@ -37,8 +37,8 @@ check-types = "echo 'Checking types ...' && mypy --pretty --no-error-summary ."
 check-licenses = "echo 'Checking licenses ...' && python -m pylic check --quiet"
 check-all = "task check-format && task check-lint && task check-types && task check-licenses && echo ✅"
 fix-all = "task fix-format ; task fix-lint"
-get-current-version = "echo -n v$(sed '11q;d' pyproject.toml | awk '{print $3}' | tail -c +2 | head -c -2)"
-release = " git tag $(task get-current-version) && git push origin $(task get-current-version)"
+get-current-version = "echo v$(sed '11q;d' pyproject.toml | awk '{print $3}' | cut -c 2- | rev | cut -c 2- | rev)"
+release = "git tag $(task get-current-version) && git push origin $(task get-current-version)"
 test = "pytest --cov=./ --cov-report=xml"
 
 [tool.pylic]
