@@ -9,7 +9,13 @@ app = typer.Typer(no_args_is_help=True)
 
 
 @app.command(help="Checks all installed licenses against the configuaration provided in [tool.pylic].")
-def check(quiet: bool = False, allow_extra_packages: bool = False, allow_extra_licenses: bool = False) -> None:
+def check(
+    quiet: bool = typer.Option(False, "--quiet", help="Only show warnings and errors."),
+    allow_extra_packages: bool = typer.Option(
+        False, "--allow-extra-packages", help="Allow to list extra unsafe packages."
+    ),
+    allow_extra_licenses: bool = typer.Option(False, "--allow-extra-licenses", help="Allow extra safe licenses."),
+) -> None:
     config = read_config()
     installed_licenses = read_all_installed_licenses_metadata()
     checker = LicenseChecker(config, installed_licenses)
