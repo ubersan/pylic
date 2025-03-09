@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from pylic.config import Config
 
@@ -10,7 +11,7 @@ class UnsafeLicenses:
 
 
 class LicenseChecker:
-    def __init__(self, config: Config | None = None, installed_licenses: list[dict] | None = None) -> None:
+    def __init__(self, config: Optional[Config] = None, installed_licenses: Optional[list[dict]] = None) -> None:
         self.config = config or Config()
         self.installed_licenses = installed_licenses or []
 
