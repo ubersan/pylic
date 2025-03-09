@@ -26,7 +26,7 @@ jobs:
       run: |
         cat <<EOT >> pyproject.toml
         [tool.pylic]
-        safe_licenses = ["Apache Software License", "MIT License"]
+        safe_licenses = ["Apache Software License", "MIT", "MIT License"]
         EOT
     - name: Test with Python ${{ matrix.python-version }}
       run: |
