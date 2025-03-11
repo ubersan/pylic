@@ -1,21 +1,21 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Optional
 
-from pylic.toml import AppConfig
+from pylic.config import Config
 
 
 @dataclass
 class UnsafeLicenses:
-    found: List[Dict]
-    ignored: List[Dict]
+    found: list[dict]
+    ignored: list[dict]
 
 
 class LicenseChecker:
-    def __init__(self, config: Optional[AppConfig] = None, installed_licenses: Optional[List[Dict]] = None) -> None:
-        self.config = config or AppConfig()
+    def __init__(self, config: Optional[Config] = None, installed_licenses: Optional[list[dict]] = None) -> None:
+        self.config = config or Config()
         self.installed_licenses = installed_licenses or []
 
-    def get_unnecessary_safe_licenses(self) -> List[str]:
+    def get_unnecessary_safe_licenses(self) -> list[str]:
         installed_license_names = [license_info["license"].lower() for license_info in self.installed_licenses]
 
         unnecessary_safe_licenses = []
@@ -27,19 +27,19 @@ class LicenseChecker:
 
         return unnecessary_safe_licenses
 
-    def get_unnecessary_unsafe_packages(self) -> List[str]:
+    def get_unnecessary_unlicensed_packages(self) -> list[str]:
         installed_package_names = [license_info["package"].lower() for license_info in self.installed_licenses]
 
-        unnecessary_unsafe_packages = []
-        lower_unsafe_packages = [unsafe_package.lower() for unsafe_package in self.config.unsafe_packages]
+        unnecessary_unlicensed_packages = []
+        lower_unlicensed_packages = [unsafe_package.lower() for unsafe_package in self.config.unlicensed_packages]
 
-        for index, unsafe_package in enumerate(lower_unsafe_packages):
+        for index, unsafe_package in enumerate(lower_unlicensed_packages):
             if unsafe_package not in installed_package_names:
-                unnecessary_unsafe_packages.append(self.config.unsafe_packages[index])
+                unnecessary_unlicensed_packages.append(self.config.unlicensed_packages[index])
 
-        return unnecessary_unsafe_packages
+        return unnecessary_unlicensed_packages
 
-    def get_unnecessary_ignore_packages(self) -> List[str]:
+    def get_unnecessary_ignore_packages(self) -> list[str]:
         installed_package_names = [license_info["package"].lower() for license_info in self.installed_licenses]
 
         unnecessary_ignore_packages = []
@@ -51,33 +51,35 @@ class LicenseChecker:
 
         return unnecessary_ignore_packages
 
-    def get_bad_unsafe_packages(self) -> List[Dict]:
-        bad_unsafe_packages: List[Dict] = []
+    def get_bad_unlicensed_packages(self) -> list[dict]:
+        bad_unlicensed_packages: list[dict] = []
 
         for license_info in self.installed_licenses:
             license = license_info["license"]
             package = license_info["package"]
 
-            if package in self.config.unsafe_packages and license.lower() != "unknown":
-                bad_unsafe_packages.append({"license": license, "package": package, "version": license_info["version"]})
+            if package in self.config.unlicensed_packages and license.lower() != "unknown":
+                bad_unlicensed_packages.append(
+                    {"license": license, "package": package, "version": license_info["version"]}
+                )
 
-        return bad_unsafe_packages
+        return bad_unlicensed_packages
 
-    def get_missing_unsafe_packages(self) -> List[Dict]:
-        missing_unsafe_packages: List[Dict] = []
+    def get_missing_unlicensed_packages(self) -> list[dict]:
+        missing_unlicensed_packages: list[dict] = []
 
         for license_info in self.installed_licenses:
             license = license_info["license"]
             package = license_info["package"]
 
-            if license.lower() == "unknown" and package not in self.config.unsafe_packages:
-                missing_unsafe_packages.append({"package": package, "version": license_info["version"]})
+            if license.lower() == "unknown" and package not in self.config.unlicensed_packages:
+                missing_unlicensed_packages.append({"package": package, "version": license_info["version"]})
 
-        return missing_unsafe_packages
+        return missing_unlicensed_packages
 
     def get_unsafe_licenses(self) -> UnsafeLicenses:
-        found_licenses: List[Dict] = []
-        ignored_licenses: List[Dict] = []
+        found_licenses: list[dict] = []
+        ignored_licenses: list[dict] = []
 
         lower_safe_licenses = [safe_license.lower() for safe_license in self.config.safe_licenses]
 

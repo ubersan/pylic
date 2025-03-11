@@ -20,7 +20,7 @@ pip install pylic
 `pylic` needs be run in the directory where your `pyproject.toml` file is located. You can configure
 
 - `safe_licenses`: All licenses you consider safe for usage. The string comparison is case-insensitive.
-- `unsafe_packages`: If you rely on a package that does not come with a license you have to explicitly list it as such.
+- `unlicensed_packages`: If you rely on a package that does not come with a license you have to explicitly list it as such.
 - `ignore_packages`: Packages that will not be reported as unsafe even if they use a license not listed as safe. This is useful in case an existing projects want to start integrating `pylic`, but are still using unsafe licenses. This enables first to ignore these packages temporarely, while they're being replaced, second to already validate newly added or updated packages against the safe license set and third to integrate `pylic` frictionless into CI/CD from the get go.
 
 ```toml
@@ -32,7 +32,7 @@ safe_licenses = [
     "Python Software Foundation License",
     "Mozilla Public License 2.0 (MPL 2.0)",
 ]
-unsafe_packages = [
+unlicensed_packages = [
     "unlicensedPackage",
 ]
 ignore_packages = [
@@ -102,7 +102,7 @@ As these licenses and packages are all ok we can configure `pylic` accordingly
 cat <<EOT >> pyproject.toml
 [tool.pylic]
 safe_licenses = ["Apache Software License", "MIT License", "Python Software Foundation License"]
-unsafe_packages = ["pkg_resources"]
+unlicensed_packages = ["pkg_resources"]
 EOT
 ```
 
@@ -141,9 +141,9 @@ to your `.pre-commit-config.yaml` file.
 
 Required tools:
 
-- Poetry (https://python-poetry.org/)
+- uv (https://docs.astral.sh/uv/)
 
-Run `poetry install` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `poetry run task <task>`.
+Run `uv sync` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `poetry run task <task>`.
 
 Creating a new release is as simple as:
 

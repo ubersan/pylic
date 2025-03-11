@@ -11,23 +11,16 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
     steps:
-    - uses: actions/checkout@v4   
-    - name: Remove pylics own pyproject.toml
-      run: rm pyproject.toml
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install toml importlib-metadata cleo
-    - name: Create pyproject.toml and fill it with the necessary config
-      run: |
-        cat <<EOT >> pyproject.toml
-        [tool.pylic]
-        safe_licenses = ["Apache Software License", "MIT", "MIT License"]
-        EOT
-    - name: Test with Python ${{ matrix.python-version }}
-      run: |
-        python -m pylic check
+      - uses: actions/checkout@v4
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install the project
+        run: uv sync --all-extras --dev
+      - name: Run license check
+        run: uv run pylic check

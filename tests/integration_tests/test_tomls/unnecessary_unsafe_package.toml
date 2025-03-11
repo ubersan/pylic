@@ -1,8 +1,0 @@
-[tool.pylic]
-safe_licenses = [
-    "BSD License",
-    "Apache Software License",
-    "MIT License",
-    "Python Software Foundation License"
-]
-unsafe_packages = ["not-installed"]
