@@ -21,19 +21,19 @@ def check(
     checker = LicenseChecker(config, installed_licenses)
 
     unnecessary_safe_licenses = checker.get_unnecessary_safe_licenses()
-    unnecessary_unsafe_packages = checker.get_unnecessary_unsafe_packages()
+    unnecessary_unlicensed_packages = checker.get_unnecessary_unlicensed_packages()
     unnecessary_ignore_packages = checker.get_unnecessary_ignore_packages()
-    bad_unsafe_packages = checker.get_bad_unsafe_packages()
-    missing_unsafe_packages = checker.get_missing_unsafe_packages()
+    bad_unlicensed_packages = checker.get_bad_unlicensed_packages()
+    missing_unlicensed_packages = checker.get_missing_unlicensed_packages()
     unsafe_licenses = checker.get_unsafe_licenses()
 
     if any(
         [
             unnecessary_safe_licenses,
-            unnecessary_unsafe_packages,
+            unnecessary_unlicensed_packages,
             unnecessary_ignore_packages,
-            bad_unsafe_packages,
-            missing_unsafe_packages,
+            bad_unlicensed_packages,
+            missing_unlicensed_packages,
             unsafe_licenses.found,
         ]
     ):
@@ -42,9 +42,9 @@ def check(
             for unnecessary_safe_license in unnecessary_safe_licenses:
                 print(f"  {unnecessary_safe_license}")
 
-        if len(unnecessary_unsafe_packages) > 0:
+        if len(unnecessary_unlicensed_packages) > 0:
             print("Unsafe packages listed which are not installed:")
-            for unnecessary_unsafe_package in unnecessary_unsafe_packages:
+            for unnecessary_unsafe_package in unnecessary_unlicensed_packages:
                 print(f"  {unnecessary_unsafe_package}")
 
         if len(unnecessary_ignore_packages) > 0:
@@ -52,14 +52,14 @@ def check(
             for unnecessary_ignore_package in unnecessary_ignore_packages:
                 print(f"  {unnecessary_ignore_package}")
 
-        if len(bad_unsafe_packages) > 0:
+        if len(bad_unlicensed_packages) > 0:
             print("Found unsafe packages with a known license. Instead allow these licenses explicitly:")
-            for bad_package in bad_unsafe_packages:
+            for bad_package in bad_unlicensed_packages:
                 print(f"  {bad_package['package']} ({bad_package['version']}): {bad_package['license']}")
 
-        if len(missing_unsafe_packages) > 0:
+        if len(missing_unlicensed_packages) > 0:
             print("Found unsafe packages:")
-            for missing_unsafe_package in missing_unsafe_packages:
+            for missing_unsafe_package in missing_unlicensed_packages:
                 print(f"  {missing_unsafe_package['package']} ({missing_unsafe_package['version']})")
 
         if len(unsafe_licenses.found) > 0:
@@ -67,12 +67,14 @@ def check(
             for bad_license in unsafe_licenses.found:
                 print(f"  {bad_license['package']} ({bad_license['version']}): {bad_license['license']}")
 
-        if not all([unnecessary_ignore_packages, bad_unsafe_packages, missing_unsafe_packages, unsafe_licenses.found]):
-            extra_packages_declared_and_allowed = len(unnecessary_unsafe_packages) > 0 and allow_extra_packages
+        if not all(
+            [unnecessary_ignore_packages, bad_unlicensed_packages, missing_unlicensed_packages, unsafe_licenses.found]
+        ):
+            extra_packages_declared_and_allowed = len(unnecessary_unlicensed_packages) > 0 and allow_extra_packages
             extra_licenses_declared_and_allowed = len(unnecessary_safe_licenses) > 0 and allow_extra_licenses
             if (
                 (not unnecessary_safe_licenses and extra_packages_declared_and_allowed)
-                or (not unnecessary_unsafe_packages and extra_licenses_declared_and_allowed)
+                or (not unnecessary_unlicensed_packages and extra_licenses_declared_and_allowed)
                 or (extra_licenses_declared_and_allowed and extra_packages_declared_and_allowed)
             ):
                 print("✨ All licenses ok ✨")

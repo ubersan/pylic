@@ -9,7 +9,7 @@ import toml
 @dataclass
 class Config:
     safe_licenses: list[str] = field(default_factory=list)
-    unsafe_packages: list[str] = field(default_factory=list)
+    unlicensed_packages: list[str] = field(default_factory=list)
     ignore_packages: list[str] = field(default_factory=list)
 
 
@@ -21,10 +21,10 @@ def read_config(filename: str = "pyproject.toml") -> Config:
     if "unknown" in [safe_license.lower() for safe_license in safe_licenses]:
         raise ValueError("'unknown' can't be an safe license. Whitelist the corresponding packages instead.")
 
-    unsafe_packages: list[str] = pylic_config.get("unsafe_packages", [])
+    unlicensed_packages: list[str] = pylic_config.get("unlicensed_packages", [])
     ignore_packages: list[str] = pylic_config.get("ignore_packages", [])
 
-    return Config(safe_licenses=safe_licenses, unsafe_packages=unsafe_packages, ignore_packages=ignore_packages)
+    return Config(safe_licenses=safe_licenses, unlicensed_packages=unlicensed_packages, ignore_packages=ignore_packages)
 
 
 def _read_pyproject_file(filename: str) -> MutableMapping[str, Any]:
