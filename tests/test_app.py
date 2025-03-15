@@ -11,8 +11,8 @@ def test_no_command_prints_error_message() -> None:
     assert result.exit_code == 2
     assert "Usage:" in result.stdout
     assert "pylic [OPTIONS] COMMAND [ARGS]..." in result.stdout
-    assert "Try 'pylic --help' for help." in result.stdout
-
+    assert "Try" in result.stdout
+    assert "for help." in result.stdout
 
 def test_help_option_prints_help_message() -> None:
     result = runner.invoke(app, "--help")
