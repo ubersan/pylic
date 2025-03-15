@@ -5,7 +5,7 @@ from pylic.config import read_config
 from pylic.license_checker import LicenseChecker
 from pylic.licenses import read_all_installed_licenses_metadata
 
-app = typer.Typer(no_args_is_help=True)
+app = typer.Typer(name="pylic")
 
 
 @app.command(help="Checks all installed licenses against the configuaration provided in [tool.pylic].")
@@ -107,5 +107,9 @@ def version() -> None:
     print(__version)
 
 
-if __name__ == "__main__":
+def main() -> None:
     app()
+
+
+if __name__ == "__main__":
+    main()
