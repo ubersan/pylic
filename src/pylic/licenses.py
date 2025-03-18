@@ -1,10 +1,22 @@
+from dataclasses import dataclass
 from importlib.metadata import Distribution, distributions
 
+from license_expression import get_spdx_licensing  # type: ignore[import-untyped]
 
-def read_all_installed_licenses_metadata() -> list[dict]:
+spdx = get_spdx_licensing()
+
+
+@dataclass
+class License:
+    name: str
+    package: str
+    version: str
+
+
+def read_all_installed_licenses_metadata() -> list[License]:
     installed_distributions = distributions()
 
-    installed_licenses: list[dict] = []
+    installed_licenses: list[License] = []
     for distribution in installed_distributions:
         license_string = _read_license_expression_from_metadata(distribution)
 
@@ -16,11 +28,11 @@ def read_all_installed_licenses_metadata() -> list[dict]:
             license_string = _read_license_from_metadata(distribution, fallback="OSI Approved")
 
         installed_licenses.append(
-            {
-                "license": license_string,
-                "package": distribution.metadata["Name"],
-                "version": distribution.metadata["Version"],
-            }
+            License(
+                name=license_string,
+                package=distribution.metadata["Name"],
+                version=distribution.metadata["Version"],
+            )
         )
 
     return installed_licenses
@@ -41,4 +53,6 @@ def _read_license_from_metadata(distribution: Distribution, fallback: str = "unk
 
 
 def _read_license_expression_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
-    return distribution.metadata.get("License-Expression", fallback)  # type:ignore[no-any-return,attr-defined]
+    license = distribution.metadata.get("License-Expression", fallback)  # type:ignore[no-any-return,attr-defined]
+    lics = spdx.license_symbols(license)
+    return str(lics[0])

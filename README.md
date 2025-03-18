@@ -21,7 +21,7 @@ pip install pylic
 
 - `safe_licenses`: All licenses you consider safe for usage. The string comparison is case-insensitive.
 - `unlicensed_packages`: If you rely on a package that does not come with a license you have to explicitly list it as such.
-- `ignore_packages`: Packages that will not be reported as unsafe even if they use a license not listed as safe. This is useful in case an existing projects want to start integrating `pylic`, but are still using unsafe licenses. This enables first to ignore these packages temporarely, while they're being replaced, second to already validate newly added or updated packages against the safe license set and third to integrate `pylic` frictionless into CI/CD from the get go.
+- `ignored_packages`: Packages that will not be reported as unsafe even if they use a license not listed as safe. This is useful in case an existing projects want to start integrating `pylic`, but are still using unsafe licenses. This enables first to ignore these packages temporarely, while they're being replaced, second to already validate newly added or updated packages against the safe license set and third to integrate `pylic` frictionless into CI/CD from the get go.
 
 ```toml
 [tool.pylic]
@@ -35,7 +35,7 @@ safe_licenses = [
 unlicensed_packages = [
     "unlicensedPackage",
 ]
-ignore_packages = [
+ignored_packages = [
     "ignoredPackage",
 ]
 ```
