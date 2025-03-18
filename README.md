@@ -1,13 +1,12 @@
-# pylic - Python license checker [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/sandrochuber/pylic/blob/main/LICENSE) [![PyPI version](https://badge.fury.io/py/pylic.svg)](https://badge.fury.io/py/pylic/) [![Codecov](https://codecov.io/gh/ubersan/pylic//branch/main/graph/badge.svg)](https://codecov.io/gh/ubersan/pylic/)
+# pylic - Python license checker [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/sandrochuber/pylic/blob/main/LICENSE) [![PyPI version](https://badge.fury.io/py/pylic.svg)](https://badge.fury.io/py/pylic/)
 
-Reads pylic configuration in `pyproject.toml` and checks licenses of installed packages recursively.
+A Python license checker. `pylic` is [PEP-639](https://peps.python.org/pep-0639/)-compliant and supports the [SPDX License Expression syntax](https://peps.python.org/pep-0639/#spdx-license-expression-syntax).
 
-Principles:
+## Principles:
 
-- Every license has to be allowed explicitly (case-insensitive comparison).
+- All licenses of all installed packages are relevant.
 - All installed packages without a license are considered unsafe and have to be listed as such.
-
-> Only installed packages are checked for licenses. Packages/dependencies listed in `pyproject.toml` are ignored.
+- Every license has to be allowed explicitly.
 
 ## Installation
 
@@ -20,8 +19,7 @@ pip install pylic
 `pylic` needs be run in the directory where your `pyproject.toml` file is located. You can configure
 
 - `safe_licenses`: All licenses you consider safe for usage. The string comparison is case-insensitive.
-- `unlicensed_packages`: If you rely on a package that does not come with a license you have to explicitly list it as such.
-- `ignored_packages`: Packages that will not be reported as unsafe even if they use a license not listed as safe. This is useful in case an existing projects want to start integrating `pylic`, but are still using unsafe licenses. This enables first to ignore these packages temporarely, while they're being replaced, second to already validate newly added or updated packages against the safe license set and third to integrate `pylic` frictionless into CI/CD from the get go.
+- `unsafe_packages`: List packages that have no license or use licenses not considered safe.
 
 ```toml
 [tool.pylic]
@@ -32,17 +30,14 @@ safe_licenses = [
     "Python Software Foundation License",
     "Mozilla Public License 2.0 (MPL 2.0)",
 ]
-unlicensed_packages = [
-    "unlicensedPackage",
-]
-ignored_packages = [
-    "ignoredPackage",
+unsafe_packages = [
+    "unsafe_package",
 ]
 ```
 
 ## Commands
 
-`pylic` provides the following commands (also see `pylic help`):
+`pylic` provides the following commands (also see `pylic --help`):
 
 - `check`: Checks all installed licenses.
 - `list`: Lists all installed packages and their corresponding license.
@@ -122,7 +117,7 @@ Use `pylic list` to list all installed packages and their corresponding licenses
 
 ## Advanced Usage
 
-In cases where the safe licenses or unsafe packages are centrally managed keeping the configuration in perfect sync to the installed packages might be too cumbersome or even impossible. To support these use cases the `check` command provides the two options (see also `check --help`) `--allow-extra-safe-licenses` and `--allow-extra-unused-packages`. These options only affect the returned status code and will keep all corresponding printed warnings unchanged.
+In cases where the safe licenses or unsafe packages are centrally managed keeping the configuration in perfect sync to the installed packages might be too cumbersome or even impossible. To support these use cases the `check` command provides the two options (see also `check --help`) `--allow-extra-licenses` and `--allow-extra-packages`. These options only affect the returned status code and will keep all corresponding warnings unchanged.
 
 ## Pre-commit
 
@@ -143,9 +138,9 @@ Required tools:
 
 - uv (https://docs.astral.sh/uv/)
 
-Run `uv sync` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `poetry run task <task>`.
+Run `uv sync` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `uv run task <task>`.
 
 Creating a new release is as simple as:
 
 - Update `version` in the pyproject.toml and the `__version__.py` file.
-- `poetry run task release`.
+- `uv run task release`.
