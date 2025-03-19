@@ -30,7 +30,7 @@ pylic = "pylic.main:main"
 
 [tool.pylic]
 safe_licenses = [
-    "Apache-2.02",
+    "Apache-2.0",
     "Apache Software License",
     "BSD License",
     "BSD-2-Clause",
