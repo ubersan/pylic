@@ -117,7 +117,7 @@ Use `pylic list` to list all installed packages and their corresponding licenses
 
 ## Advanced Usage
 
-In cases where the safe licenses or unsafe packages are centrally managed keeping the configuration in perfect sync to the installed packages might be too cumbersome or even impossible. To support these use cases the `check` command provides the two options (see also `check --help`) `--allow-extra-licenses` and `--allow-extra-packages`. These options only affect the returned status code and will keep all corresponding warnings unchanged.
+In cases where the safe licenses or unsafe packages are centrally managed keeping the configuration in perfect sync to the installed packages might be too cumbersome or even impossible. To support these use cases the `check` command provides the two options (see also `check --help`) `--allow-extra-safe-licenses` and `--allow-extra-unsafe-packages`. These options only affect the returned status code and will keep all corresponding warnings unchanged.
 
 ## Pre-commit
 

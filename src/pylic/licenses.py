@@ -7,17 +7,16 @@ spdx = get_spdx_licensing()
 
 
 @dataclass
-class License:
+class Package:
     name: str
-    package: str
+    license: str
     version: str
 
 
-def read_all_installed_licenses_metadata() -> list[License]:
-    installed_distributions = distributions()
+def read_all_installed_packages_metadata() -> list[Package]:
+    installed_packages: list[Package] = []
 
-    installed_licenses: list[License] = []
-    for distribution in installed_distributions:
+    for distribution in distributions():
         license_string = _read_license_expression_from_metadata(distribution)
 
         if license_string == "unknown":
@@ -27,15 +26,15 @@ def read_all_installed_licenses_metadata() -> list[License]:
         if license_string == "OSI Approved":
             license_string = _read_license_from_metadata(distribution, fallback="OSI Approved")
 
-        installed_licenses.append(
-            License(
-                name=license_string,
-                package=distribution.metadata["Name"],
+        installed_packages.append(
+            Package(
+                license=license_string,
+                name=distribution.metadata["Name"],
                 version=distribution.metadata["Version"],
             )
         )
 
-    return installed_licenses
+    return installed_packages
 
 
 def _read_license_from_classifier(distribution: Distribution) -> str:
