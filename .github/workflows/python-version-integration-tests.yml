@@ -22,5 +22,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install the project
         run: uv sync --all-extras --dev
-      - name: Run license check
-        run: uv run pylic check
+      - name: Run pylic commands
+        run: |
+          uv run pylic --help
+          uv run pylic check --help
+          uv run pylic check
+          uv run pylic list
+          uv run pylic version
