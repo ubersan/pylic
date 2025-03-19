@@ -143,4 +143,5 @@ Run `uv sync` to install all necessary dependencies. Checkout the `[tool.taskipy
 Creating a new release is as simple as:
 
 - Update `version` in the pyproject.toml and the `__version__.py` file.
-- `uv run task release`.
+- Run `git tag <new-version>`.
+- Run `git push origin <new-version>`.
