@@ -52,6 +52,4 @@ def _read_license_from_metadata(distribution: Distribution, fallback: str = "unk
 
 
 def _read_license_expression_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
-    license = distribution.metadata.get("License-Expression", fallback)  # type:ignore[no-any-return,attr-defined]
-    lics = spdx.license_symbols(license)
-    return str(lics[0])
+    return distribution.metadata.get("License-Expression", fallback)  # type:ignore[no-any-return,attr-defined]

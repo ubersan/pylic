@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -7,8 +7,8 @@ import toml
 
 @dataclass
 class Config:
-    safe_licenses: list[str]
-    unsafe_packages: list[str]
+    safe_licenses: list[str] = field(default_factory=list)
+    unsafe_packages: list[str] = field(default_factory=list)
 
 
 def read_config(filename: str = "pyproject.toml") -> Config:
