@@ -8,7 +8,9 @@ class LicenseChecker:
         self.installed_packages = installed_packages
 
     def get_unnecessary_safe_licenses(self) -> list[str]:
-        installed_license_names = [package.license.lower() for package in self.installed_packages]
+        installed_license_names = [
+            license.lower() for package in self.installed_packages for license in package.licenses
+        ]
         return [
             safe_license
             for safe_license in self.config.safe_licenses
@@ -22,7 +24,9 @@ class LicenseChecker:
     def get_unsafe_package_names_with_safe_license(self) -> list[str]:
         safe_license_names = [safe_license.lower() for safe_license in self.config.safe_licenses]
         safe_package_names = [
-            package.name for package in self.installed_packages if package.license.lower() in safe_license_names
+            package.name
+            for package in self.installed_packages
+            if {license.lower() for license in package.licenses}.issubset(set(safe_license_names))
         ]
 
         return [package_name for package_name in self.config.unsafe_packages if package_name in safe_package_names]
@@ -32,8 +36,8 @@ class LicenseChecker:
         return [
             package
             for package in self.installed_packages
-            if package.license.lower() != "unknown"
-            and package.license.lower() not in safe_license_names
+            if (len(package.licenses) == 1 and package.licenses[0].lower() != "unknown")
+            and not {license.lower() for license in package.licenses}.issubset(set(safe_license_names))
             and package.name not in self.config.unsafe_packages
         ]
 
@@ -41,5 +45,6 @@ class LicenseChecker:
         return [
             package
             for package in self.installed_packages
-            if package.license.lower() == "unknown" and package.name not in self.config.unsafe_packages
+            if (len(package.licenses) == 1 and package.licenses[0].lower() == "unknown")
+            and package.name not in self.config.unsafe_packages
         ]

@@ -64,6 +64,22 @@ def test_successful_check_prints_all_licenses_ok_with_license_expression(mocker:
     assert "✨ All licenses ok ✨" in result.stdout
 
 
+def test_successful_check_prints_all_licenses_ok_with_spdx_license_expression(mocker: MockerFixture) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={"License-Expression": "0BSD or miT or apache-2.0", "Name": "pylic", "Version": "1.2.3"},
+            )
+        ],
+    )
+    given_config(mocker, Config(safe_licenses=["MIT", "0BSD", "Apache-2.0"]))
+    result = runner.invoke(app, "check")
+    assert result.exit_code == 0
+    assert "✨ All licenses ok ✨" in result.stdout
+
+
 def test_quiet_flag(mocker: MockerFixture) -> None:
     given_distributions(
         mocker,
@@ -174,6 +190,22 @@ def test_successful_list_prints_all_installed_packages_and_licenses(mocker: Mock
     assert "pylic2 (1.2.2): MIT License2" in result.stdout
     assert "pylic3 (1.2.3): MIT License3" in result.stdout
     assert "pylic4 (1.2.4): MIT License4" in result.stdout
+
+
+def test_successful_list_prints_all_licenses_ok_with_spdx_license_expression(mocker: MockerFixture) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={"License-Expression": "0BSD or miT or apache-2.0", "Name": "pylic", "Version": "1.2.3"},
+            )
+        ],
+    )
+    given_config(mocker, Config(safe_licenses=["MIT", "0BSD", "Apache-2.0"]))
+    result = runner.invoke(app, "list")
+    assert result.exit_code == 0
+    assert "pylic (1.2.3): 0BSD,Apache-2.0,MIT" in result.stdout
 
 
 def test_version_command_prints_version() -> None:

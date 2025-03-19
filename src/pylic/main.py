@@ -50,7 +50,7 @@ def check(
         error = True
         print("Found installed packages with unsafe licenses:")
         for package in packages_with_unsafe_licenses:
-            print(f"  {package.name} ({package.version}): {package.license}")
+            print(f"  {package.name} ({package.version}): {','.join(package.licenses)}")
 
     missing_unsafe_packages = checker.get_missing_unsafe_packages()
     if len(missing_unsafe_packages) > 0:
@@ -70,7 +70,8 @@ def check(
 def list() -> None:
     installed_licenses = read_all_installed_packages_metadata()
     unsorted = {
-        installed.name: {"version": installed.version, "license": installed.license} for installed in installed_licenses
+        installed.name: {"version": installed.version, "license": ",".join(installed.licenses)}
+        for installed in installed_licenses
     }
     for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
         print(f"{package} ({rest['version']}): {rest['license']}")
