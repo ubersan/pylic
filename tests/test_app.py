@@ -149,6 +149,21 @@ def test_package_with_unsafe_licenses_are_correctly_detected(mocker: MockerFixtu
     assert "✨ All licenses ok ✨" not in result.stdout
 
 
+def test_package_declared_as_safe_is_correctly_detected(mocker: MockerFixture) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(
+                Distribution, metadata={"License": "Other License", "Name": "specialsoftware", "Version": "1.2.3"}
+            ),
+        ],
+    )
+    given_config(mocker, Config(safe_packages=["specialsoftware"]))
+    result = runner.invoke(app, "check")
+    assert result.exit_code == 0
+    assert "✨ All licenses ok ✨" in result.stdout
+
+
 def test_packages_with_unknown_license_are_correctly_detected(mocker: MockerFixture) -> None:
     given_distributions(
         mocker,

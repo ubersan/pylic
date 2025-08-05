@@ -33,12 +33,14 @@ class LicenseChecker:
 
     def get_packages_without_safe_license(self) -> list[Package]:
         safe_license_names = [safe_license.lower() for safe_license in self.config.safe_licenses]
+        safe_package_names = [safe_package.lower() for safe_package in self.config.safe_packages]
         return [
             package
             for package in self.installed_packages
             if (len(package.licenses) == 1 and package.licenses[0].lower() != "unknown")
             and not {license.lower() for license in package.licenses}.issubset(set(safe_license_names))
             and package.name not in self.config.unsafe_packages
+            and package.name not in safe_package_names
         ]
 
     def get_missing_unsafe_packages(self) -> list[Package]:
