@@ -1,3 +1,4 @@
+import sys
 import typer
 
 from pylic.__version__ import version as __version
@@ -18,7 +19,11 @@ def check(
         False, "--allow-extra-safe-licenses", help="Allow extra safe licenses."
     ),
 ) -> None:
-    config = read_config()
+    try:
+        config = read_config()
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
     installed_licenses = read_all_installed_packages_metadata()
     checker = LicenseChecker(config, installed_licenses)
     error = False
