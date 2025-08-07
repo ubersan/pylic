@@ -1,8 +1,9 @@
+import re
+import toml
+
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-
-import toml
 
 
 @dataclass
@@ -25,6 +26,8 @@ def read_config(filename: str = "pyproject.toml") -> Config:
     unsafe_packages: list[str] = pylic_config.get("unsafe_packages", [])
 
     safe_packages: list[str] = pylic_config.get("safe_packages", [])
+    if None in [re.search("(?P<name>.+)\\s*\\((?P<version>.+)\\)", safe_package) for safe_package in safe_packages]:
+        raise ValueError("'safe_packages' entries have to be in format 'package_name (package_version)'")
 
     return Config(safe_licenses=safe_licenses, safe_packages=safe_packages, unsafe_packages=unsafe_packages)
 

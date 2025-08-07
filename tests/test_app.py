@@ -4,6 +4,8 @@ from unittest.mock import MagicMock
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
+from typing import Any
+
 from pylic.__version__ import version
 from pylic.config import Config
 from pylic.main import app
@@ -28,12 +30,19 @@ def test_help_option_prints_help_message() -> None:
     assert "Commands" in result.stdout
 
 
-def test_successful_check_prints_all_licenses_ok_with_classifier(mocker: MockerFixture) -> None:
+def test_successful_check_prints_all_licenses_ok_with_classifier(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
         mocker,
         [
             MagicMock(
-                Distribution, metadata={"Classifier": "License :: MIT License", "Name": "pylic", "Version": "1.2.3"}
+                Distribution,
+                metadata={
+                    "Classifier": "License :: MIT License",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
             )
         ],
     )
@@ -43,34 +52,63 @@ def test_successful_check_prints_all_licenses_ok_with_classifier(mocker: MockerF
     assert "✨ All licenses ok ✨" in result.stdout
 
 
-def test_successful_check_prints_all_licenses_ok_with_license(mocker: MockerFixture) -> None:
-    given_distributions(
-        mocker, [MagicMock(Distribution, metadata={"License": "MIT License", "Name": "pylic", "Version": "1.2.3"})]
-    )
-    given_config(mocker, Config(safe_licenses=["MIT License"]))
-    result = runner.invoke(app, "check")
-    assert result.exit_code == 0
-    assert "✨ All licenses ok ✨" in result.stdout
-
-
-def test_successful_check_prints_all_licenses_ok_with_license_expression(mocker: MockerFixture) -> None:
-    given_distributions(
-        mocker,
-        [MagicMock(Distribution, metadata={"License-Expression": "MIT License", "Name": "pylic", "Version": "1.2.3"})],
-    )
-    given_config(mocker, Config(safe_licenses=["MIT License"]))
-    result = runner.invoke(app, "check")
-    assert result.exit_code == 0
-    assert "✨ All licenses ok ✨" in result.stdout
-
-
-def test_successful_check_prints_all_licenses_ok_with_spdx_license_expression(mocker: MockerFixture) -> None:
+def test_successful_check_prints_all_licenses_ok_with_license(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
         mocker,
         [
             MagicMock(
                 Distribution,
-                metadata={"License-Expression": "0BSD or miT or apache-2.0", "Name": "pylic", "Version": "1.2.3"},
+                metadata={
+                    "License": "MIT License",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
+            )
+        ],
+    )
+    given_config(mocker, Config(safe_licenses=["MIT License"]))
+    result = runner.invoke(app, "check")
+    assert result.exit_code == 0
+    assert "✨ All licenses ok ✨" in result.stdout
+
+
+def test_successful_check_prints_all_licenses_ok_with_license_expression(
+    mocker: MockerFixture,
+) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License-Expression": "MIT License",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
+            )
+        ],
+    )
+    given_config(mocker, Config(safe_licenses=["MIT License"]))
+    result = runner.invoke(app, "check")
+    assert result.exit_code == 0
+    assert "✨ All licenses ok ✨" in result.stdout
+
+
+def test_successful_check_prints_all_licenses_ok_with_spdx_license_expression(
+    mocker: MockerFixture,
+) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License-Expression": "0BSD or miT or apache-2.0",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
             )
         ],
     )
@@ -83,7 +121,16 @@ def test_successful_check_prints_all_licenses_ok_with_spdx_license_expression(mo
 def test_quiet_flag(mocker: MockerFixture) -> None:
     given_distributions(
         mocker,
-        [MagicMock(Distribution, metadata={"License-Expression": "MIT License", "Name": "pylic", "Version": "1.2.3"})],
+        [
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License-Expression": "MIT License",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
+            )
+        ],
     )
     given_config(mocker, Config(safe_licenses=["MIT License"]))
     result = runner.invoke(app, ["check", "--quiet"])
@@ -93,7 +140,17 @@ def test_quiet_flag(mocker: MockerFixture) -> None:
 
 def test_unnecessary_safe_license_is_correctly_detected(mocker: MockerFixture) -> None:
     given_distributions(
-        mocker, [MagicMock(Distribution, metadata={"License": "MIT License", "Name": "pylic", "Version": "1.2.3"})]
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "MIT License",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
+            )
+        ],
     )
     given_config(mocker, Config(safe_licenses=["MIT License", "MIT License2"]))
     result = runner.invoke(app, "check")
@@ -103,9 +160,21 @@ def test_unnecessary_safe_license_is_correctly_detected(mocker: MockerFixture) -
     assert "✨ All licenses ok ✨" not in result.stdout
 
 
-def test_unnecessary_unsafe_package_is_correctly_detected(mocker: MockerFixture) -> None:
+def test_unnecessary_unsafe_package_is_correctly_detected(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
-        mocker, [MagicMock(Distribution, metadata={"License": "MIT License", "Name": "pylic", "Version": "1.2.3"})]
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "MIT License",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
+            )
+        ],
     )
     given_config(mocker, Config(safe_licenses=["MIT License"], unsafe_packages=["pylic2"]))
     result = runner.invoke(app, "check")
@@ -115,15 +184,34 @@ def test_unnecessary_unsafe_package_is_correctly_detected(mocker: MockerFixture)
     assert "✨ All licenses ok ✨" not in result.stdout
 
 
-def test_unsafe_package_with_safe_license_is_correctly_detected(mocker: MockerFixture) -> None:
+def test_unsafe_package_with_safe_license_is_correctly_detected(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
         mocker,
         [
-            MagicMock(Distribution, metadata={"License": "MIT License", "Name": "pylic1", "Version": "1.2.3"}),
-            MagicMock(Distribution, metadata={"License": "MIT License2", "Name": "pylic2", "Version": "1.2.2"}),
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "MIT License",
+                    "Name": "pylic1",
+                    "Version": "1.2.3",
+                },
+            ),
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "MIT License2",
+                    "Name": "pylic2",
+                    "Version": "1.2.2",
+                },
+            ),
         ],
     )
-    given_config(mocker, Config(safe_licenses=["MIT License", "MIT License2"], unsafe_packages=["pylic2"]))
+    given_config(
+        mocker,
+        Config(safe_licenses=["MIT License", "MIT License2"], unsafe_packages=["pylic2"]),
+    )
     result = runner.invoke(app, "check")
     assert result.exit_code == 1
     assert "Unsafe packages listed that have a safe license:" in result.stdout
@@ -132,12 +220,28 @@ def test_unsafe_package_with_safe_license_is_correctly_detected(mocker: MockerFi
     assert "✨ All licenses ok ✨" not in result.stdout
 
 
-def test_package_with_unsafe_licenses_are_correctly_detected(mocker: MockerFixture) -> None:
+def test_package_with_unsafe_licenses_are_correctly_detected(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
         mocker,
         [
-            MagicMock(Distribution, metadata={"License": "MIT License", "Name": "pylic1", "Version": "1.2.3"}),
-            MagicMock(Distribution, metadata={"License": "MIT License2", "Name": "pylic2", "Version": "1.2.2"}),
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "MIT License",
+                    "Name": "pylic1",
+                    "Version": "1.2.3",
+                },
+            ),
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "MIT License2",
+                    "Name": "pylic2",
+                    "Version": "1.2.2",
+                },
+            ),
         ],
     )
     given_config(mocker, Config(safe_licenses=["MIT License"]))
@@ -154,22 +258,80 @@ def test_package_declared_as_safe_is_correctly_detected(mocker: MockerFixture) -
         mocker,
         [
             MagicMock(
-                Distribution, metadata={"License": "Other License", "Name": "specialsoftware", "Version": "1.2.3"}
+                Distribution,
+                metadata={
+                    "License": "Other License",
+                    "Name": "specialsoftware",
+                    "Version": "1.2.3",
+                },
             ),
         ],
     )
-    given_config(mocker, Config(safe_packages=["specialsoftware"]))
+    given_config(mocker, Config(safe_packages=["specialsoftware (1.2.3)"]))
     result = runner.invoke(app, "check")
     assert result.exit_code == 0
     assert "✨ All licenses ok ✨" in result.stdout
 
 
-def test_packages_with_unknown_license_are_correctly_detected(mocker: MockerFixture) -> None:
+def test_package_declared_as_safe_wrong_version_is_rejected(
+    mocker: MockerFixture,
+) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "Other License",
+                    "Name": "specialsoftware",
+                    "Version": "1.2.3",
+                },
+            ),
+        ],
+    )
+    given_config(mocker, Config(safe_packages=["specialsoftware (1.2.0)"]))
+    result = runner.invoke(app, "check")
+    assert result.exit_code != 0
+    assert "Found installed packages with unsafe licenses" in result.stdout
+
+
+def test_package_declared_as_safe_without_version_is_rejected(
+    mocker: MockerFixture,
+) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "Other License",
+                    "Name": "specialsoftware",
+                    "Version": "1.2.3",
+                },
+            ),
+        ],
+    )
+    given_config_file(mocker, {"tool": {"pylic": {"safe_packages:": ["specialsoftware"]}}})
+    result = runner.invoke(app, "check")
+    assert result.exit_code != 0
+    assert "have to be in format" in result.stdout
+
+
+def test_packages_with_unknown_license_are_correctly_detected(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
         mocker,
         [
             MagicMock(Distribution, metadata={"Name": "pylic1", "Version": "1.2.3"}),
-            MagicMock(Distribution, metadata={"License": "MIT License2", "Name": "pylic2", "Version": "1.2.2"}),
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License": "MIT License2",
+                    "Name": "pylic2",
+                    "Version": "1.2.2",
+                },
+            ),
         ],
     )
     given_config(mocker, Config(safe_licenses=["MIT License2"]))
@@ -181,21 +343,43 @@ def test_packages_with_unknown_license_are_correctly_detected(mocker: MockerFixt
     assert "✨ All licenses ok ✨" not in result.stdout
 
 
-def test_successful_list_prints_all_installed_packages_and_licenses(mocker: MockerFixture) -> None:
+def test_successful_list_prints_all_installed_packages_and_licenses(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
         mocker,
         [
             MagicMock(
-                Distribution, metadata={"License-Expression": "MIT License1", "Name": "pylic1", "Version": "1.2.1"}
+                Distribution,
+                metadata={
+                    "License-Expression": "MIT License1",
+                    "Name": "pylic1",
+                    "Version": "1.2.1",
+                },
             ),
             MagicMock(
-                Distribution, metadata={"License-Expression": "MIT License2", "Name": "pylic2", "Version": "1.2.2"}
+                Distribution,
+                metadata={
+                    "License-Expression": "MIT License2",
+                    "Name": "pylic2",
+                    "Version": "1.2.2",
+                },
             ),
             MagicMock(
-                Distribution, metadata={"License-Expression": "MIT License3", "Name": "pylic3", "Version": "1.2.3"}
+                Distribution,
+                metadata={
+                    "License-Expression": "MIT License3",
+                    "Name": "pylic3",
+                    "Version": "1.2.3",
+                },
             ),
             MagicMock(
-                Distribution, metadata={"License-Expression": "MIT License4", "Name": "pylic4", "Version": "1.2.4"}
+                Distribution,
+                metadata={
+                    "License-Expression": "MIT License4",
+                    "Name": "pylic4",
+                    "Version": "1.2.4",
+                },
             ),
         ],
     )
@@ -207,13 +391,19 @@ def test_successful_list_prints_all_installed_packages_and_licenses(mocker: Mock
     assert "pylic4 (1.2.4): MIT License4" in result.stdout
 
 
-def test_successful_list_prints_all_licenses_ok_with_spdx_license_expression(mocker: MockerFixture) -> None:
+def test_successful_list_prints_all_licenses_ok_with_spdx_license_expression(
+    mocker: MockerFixture,
+) -> None:
     given_distributions(
         mocker,
         [
             MagicMock(
                 Distribution,
-                metadata={"License-Expression": "0BSD or miT or apache-2.0", "Name": "pylic", "Version": "1.2.3"},
+                metadata={
+                    "License-Expression": "0BSD or miT or apache-2.0",
+                    "Name": "pylic",
+                    "Version": "1.2.3",
+                },
             )
         ],
     )
@@ -235,3 +425,7 @@ def given_distributions(mocker: MockerFixture, distributions: list[Distribution]
 
 def given_config(mocker: MockerFixture, config: Config) -> None:
     mocker.patch("pylic.main.read_config", return_value=config)
+
+
+def given_config_file(mocker: MockerFixture, config_dict: dict[str, Any]) -> None:
+    mocker.patch("pylic.config._read_pyproject_file", return_value=config_dict)
