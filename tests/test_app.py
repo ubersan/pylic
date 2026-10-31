@@ -1,6 +1,7 @@
 from importlib.metadata import Distribution
 from unittest.mock import MagicMock
 
+import pytest
 from pytest_mock import MockerFixture
 from typer.testing import CliRunner
 
@@ -149,11 +150,37 @@ def test_package_with_unsafe_licenses_are_correctly_detected(mocker: MockerFixtu
     assert "✨ All licenses ok ✨" not in result.stdout
 
 
-def test_packages_with_unknown_license_are_correctly_detected(mocker: MockerFixture) -> None:
+@pytest.mark.parametrize("operator", ["AND", "OR"])
+def test_check_fails_for_spdx_expression_with_unsafe_license(mocker: MockerFixture, operator: str) -> None:
     given_distributions(
         mocker,
         [
-            MagicMock(Distribution, metadata={"Name": "pylic1", "Version": "1.2.3"}),
+            MagicMock(
+                Distribution,
+                metadata={
+                    "License-Expression": f"Apache-2.0 {operator} GPL-3.0-only",
+                    "Name": "pkg",
+                    "Version": "1.0.0",
+                },
+            )
+        ],
+    )
+    given_config(mocker, Config(safe_licenses=["Apache-2.0"]))
+    result = runner.invoke(app, "check")
+    assert result.exit_code == 1
+    assert "Found installed packages with unsafe licenses:" in result.stdout
+    assert "pkg (1.0.0): Apache-2.0,GPL-3.0-only" in result.stdout
+    assert "✨ All licenses ok ✨" not in result.stdout
+
+
+@pytest.mark.parametrize("license_metadata", [{}, {"License": "unknown"}, {"License": "UNKNOWN"}])
+def test_packages_with_unknown_license_are_correctly_detected(
+    mocker: MockerFixture, license_metadata: dict[str, str]
+) -> None:
+    given_distributions(
+        mocker,
+        [
+            MagicMock(Distribution, metadata={"Name": "pylic1", "Version": "1.2.3", **license_metadata}),
             MagicMock(Distribution, metadata={"License": "MIT License2", "Name": "pylic2", "Version": "1.2.2"}),
         ],
     )
@@ -161,6 +188,7 @@ def test_packages_with_unknown_license_are_correctly_detected(mocker: MockerFixt
     result = runner.invoke(app, "check")
     assert result.exit_code == 1
     assert "Found packages with unknown license, mark them as unsafe:" in result.stdout
+    assert "Found installed packages with unsafe licenses:" not in result.stdout
     assert "pylic1 (1.2.3)" in result.stdout
     assert "pylic2" not in result.stdout
     assert "✨ All licenses ok ✨" not in result.stdout
