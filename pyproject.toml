@@ -1,6 +1,6 @@
 [project]
 name = "pylic"
-version = "5.0.1"
+version = "6.0.0"
 description = "A Python license checker"
 readme = "README.md"
 authors = [

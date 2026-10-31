@@ -103,7 +103,7 @@ wheels = [
 
 [[package]]
 name = "pylic"
-version = "5.0.1"
+version = "6.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "license-expression" },
