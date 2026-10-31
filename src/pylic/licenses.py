@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from importlib.metadata import Distribution, distributions
 
-from license_expression import ExpressionError, ExpressionParseError, get_spdx_licensing  # type: ignore[import-untyped]
+from license_expression import ExpressionError, ExpressionParseError, get_spdx_licensing
 
 spdx = get_spdx_licensing()
 
@@ -43,7 +43,7 @@ def read_all_installed_packages_metadata() -> list[Package]:
 
 
 def _read_license_from_classifier(distribution: Distribution) -> str:
-    for key, content in distribution.metadata.items():  # type: ignore[attr-defined]
+    for key, content in distribution.metadata.items():
         if key == "Classifier":
             parts = [part.strip() for part in content.split("::")]
             if parts[0] == "License":

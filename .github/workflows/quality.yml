@@ -18,6 +18,6 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
       - name: Run all quality checks
-        run: uv run task check
+        run: uv run just check
       - name: Run all tests
-        run: uv run task test
+        run: uv run just test
