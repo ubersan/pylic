@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from importlib.metadata import Distribution, distributions
 
-from license_expression import ExpressionError, ExpressionParseError, get_spdx_licensing  # type: ignore[import-untyped]
+from license_expression import ExpressionError, ExpressionParseError, get_spdx_licensing
 
 spdx = get_spdx_licensing()
 
@@ -43,7 +43,8 @@ def read_all_installed_packages_metadata() -> list[Package]:
 
 
 def _read_license_from_classifier(distribution: Distribution) -> str:
-    for key, content in distribution.metadata.items():  # type: ignore[attr-defined]
+    # PackageMetadata's protocol omits the mapping methods available at runtime.
+    for key, content in distribution.metadata.items():  # ty: ignore[unresolved-attribute]
         if key == "Classifier":
             parts = [part.strip() for part in content.split("::")]
             if parts[0] == "License":
@@ -53,11 +54,11 @@ def _read_license_from_classifier(distribution: Distribution) -> str:
 
 
 def _read_license_from_metadata(distribution: Distribution, fallback: str = "unknown") -> str:
-    return distribution.metadata.get("License", fallback)
+    return distribution.metadata.get("License", fallback)  # ty: ignore[unresolved-attribute]
 
 
 def _read_license_expression_from_metadata(distribution: Distribution, fallback: str = "unknown") -> list[str]:
-    expr = distribution.metadata.get("License-Expression")
+    expr = distribution.metadata.get("License-Expression")  # ty: ignore[unresolved-attribute]
     if expr is None:
         return [fallback]
 

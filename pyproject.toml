@@ -1,6 +1,6 @@
 [project]
 name = "pylic"
-version = "5.0.1"
+version = "6.0.0"
 description = "A Python license checker"
 readme = "README.md"
 authors = [
@@ -8,7 +8,7 @@ authors = [
 ]
 keywords = ["cli", "license", "checker", "spdx"]
 license = "MIT"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "license-expression>=30.4.1",
     "toml>=0.10.2",
@@ -17,11 +17,11 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "mypy>=1.15.0",
     "pytest>=8.3.5",
     "pytest-mock>=3.14.0",
     "ruff>=0.9.10",
-    "taskipy>=1.14.1",
+    "rust-just>=1.59.0",
+    "ty>=0.0.95",
     "types-toml>=0.10.8.20240310",
 ]
 
@@ -34,6 +34,7 @@ safe_licenses = [
     "Apache Software License",
     "BSD License",
     "BSD-2-Clause",
+    "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "MIT",
     "MIT License",
     "Python Software Foundation License",
@@ -69,21 +70,10 @@ select = [
     "RUF"
 ]
 
-[tool.mypy]
-explicit_package_bases = true
-namespace_packages = true
-mypy_path = "src"
-
-[tool.taskipy.tasks]
-check-format = "echo 'Checking formatting ...' && ruff format --diff --quiet ."
-check-lint = "echo 'Checking linting ...' && ruff check --quiet ."
-check-types = "echo 'Checking types ...' && mypy --pretty --no-error-summary ."
-check-licenses = "echo 'Checking licenses ...' && python -m pylic check --quiet"
-check = "task check-format && task check-lint && task check-types && task check-licenses && echo ✅"
-fix-format = "echo 'Fixing formatting ...' && ruff format ."
-fix-lint = "echo 'Fixing linting ...' && ruff check --fix ."
-fix = "task fix-format ; task fix-lint"
-test = "pytest"
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
 
 [build-system]
 requires = ["hatchling"]

@@ -10,6 +10,8 @@ A Python license checker. `pylic` is [PEP-639](https://peps.python.org/pep-0639/
 
 ## Installation
 
+Requires Python 3.11 or newer. Tested on Python 3.11–3.15.
+
 ```sh
 pip install pylic
 ```
@@ -138,7 +140,7 @@ Required tools:
 
 - uv (https://docs.astral.sh/uv/)
 
-Run `uv sync` to install all necessary dependencies. Checkout the `[tool.taskipy.tasks]` (see [taskipy](https://github.com/illBeRoy/taskipy)) section in the `pyproject.toml` file for utility tasks. You can run these with `uv run task <task>`.
+Run `uv sync` to install all necessary dependencies, including [just](https://just.systems/) (provided by the `rust-just` package) and [ty](https://docs.astral.sh/ty/). Utility tasks are defined in the `justfile` and can be run with `uv run just <recipe>`. Run `uv run just --list` to list available recipes, `uv run just check` for all quality checks, or `uv run just test` for the tests.
 
 Creating a new release is as simple as:
 

@@ -73,7 +73,7 @@ def list() -> None:
         installed.name: {"version": installed.version, "license": ",".join(installed.licenses)}
         for installed in installed_licenses
     }
-    for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):  # type:ignore
+    for package, rest in sorted(unsorted.items(), key=lambda k: k[0].lower()):
         print(f"{package} ({rest['version']}): {rest['license']}")
 
 
