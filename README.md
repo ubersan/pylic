@@ -10,6 +10,8 @@ A Python license checker. `pylic` is [PEP-639](https://peps.python.org/pep-0639/
 
 ## Installation
 
+Requires Python 3.11 or newer. Tested on Python 3.11–3.15.
+
 ```sh
 pip install pylic
 ```
