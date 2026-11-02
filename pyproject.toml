@@ -1,6 +1,6 @@
 [project]
 name = "pylic"
-version = "6.0.0"
+version = "6.1.0"
 description = "A Python license checker"
 readme = "README.md"
 authors = [
@@ -31,13 +31,10 @@ pylic = "pylic.main:main"
 [tool.pylic]
 safe_licenses = [
     "Apache-2.0",
-    "Apache Software License",
-    "BSD License",
     "BSD-2-Clause",
     "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "MIT",
     "MIT License",
-    "Python Software Foundation License",
     "ISC License (ISCL)"
 ]
 

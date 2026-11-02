@@ -15,10 +15,10 @@ runner = CliRunner()
 def test_no_command_prints_error_message() -> None:
     result = runner.invoke(app)
     assert result.exit_code == 2
-    assert "Usage:" in result.stdout
-    assert "pylic [OPTIONS] COMMAND [ARGS]..." in result.stdout
-    assert "Try" in result.stdout
-    assert "for help." in result.stdout
+    assert "Usage:" in result.stderr
+    assert "pylic [OPTIONS] COMMAND [ARGS]..." in result.stderr
+    assert "Try" in result.stderr
+    assert "for help." in result.stderr
 
 
 def test_help_option_prints_help_message() -> None:
