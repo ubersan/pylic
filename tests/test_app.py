@@ -242,6 +242,15 @@ def test_version_command_prints_version() -> None:
     assert f"{version}\n" == result.stdout
 
 
+def test_check_without_config_prints_error_message(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, "check")
+    assert type(result.exception) is SystemExit
+    assert result.exit_code == 1
+    assert "pyproject.toml" in result.stdout
+    assert "✨ All licenses ok ✨" not in result.stdout
+
+
 def given_distributions(mocker: MockerFixture, distributions: list[Distribution]) -> None:
     mocker.patch("pylic.licenses.distributions", return_value=distributions)
 

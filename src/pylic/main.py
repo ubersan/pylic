@@ -18,7 +18,11 @@ def check(
         False, "--allow-extra-safe-licenses", help="Allow extra safe licenses."
     ),
 ) -> None:
-    config = read_config()
+    try:
+        config = read_config()
+    except FileNotFoundError:
+        print("Error: pyproject.toml not found. Run pylic in a directory containing a pyproject.toml file.")
+        raise typer.Exit(1)
     installed_licenses = read_all_installed_packages_metadata()
     checker = LicenseChecker(config, installed_licenses)
     error = False
